@@ -2,7 +2,8 @@ import { h, fmt } from './dom';
 import { go, state, type ViewData, type ViewName } from './state';
 import { currentSequence } from './start';
 import { extractPoses } from './video';
-import { assignHolds, detectHolds, guessMatFront } from '../core/segmentation';
+import { detectHolds, guessMatFront } from '../core/segmentation';
+import { realign } from './align';
 
 let running = false;
 
@@ -47,12 +48,17 @@ async function run(bar: HTMLProgressElement, text: HTMLElement): Promise<void> {
       text.textContent = `${labels[v]}: ${fmt(f * 100)} %`;
     });
     if (!ex.frames.some((f) => f.frame)) throw new Error(`In der ${labels[v]} wurde keine Person erkannt. Ist der ganze Körper im Bild?`);
-    const holds = assignHolds(detectHolds(ex.frames), seq.steps.length);
-    result[v] = {
-      file, width: ex.width, height: ex.height, duration: ex.duration, frames: ex.frames, holds,
+    const flags = state.included[v];
+    const vd: ViewData = {
+      file, width: ex.width, height: ex.height, duration: ex.duration, frames: ex.frames,
+      allHolds: detectHolds(ex.frames, { aspect: ex.width / ex.height }),
+      holds: seq.steps.map(() => null),
+      included: seq.steps.map((_, k) => flags?.[k] !== false),
       matFront: v === 'side' ? guessMatFront(ex.frames) : 'right',
       overrides: seq.steps.map(() => null),
     };
+    realign(vd, v, seq.steps);
+    result[v] = vd;
   }
   state.views = result;
   state.analyzed = seq;

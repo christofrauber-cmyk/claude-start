@@ -1,9 +1,11 @@
-import { getPoint, MIN_VISIBILITY } from './landmarks';
+import { getPoint } from './landmarks';
 import type { FrameContext, PoseFrame, Side, SideCue } from './types';
 
 /** Minimum difference between left and right before we trust the guess. */
 const MIN_KNEE_DIFF = 15; // degrees
 const MIN_HEIGHT_DIFF = 0.15; // torso lengths
+/** Lower than for measuring: a hidden far leg is still placed plausibly enough for a left/right comparison. */
+const MIN_SIDE_VISIBILITY = 0.3;
 
 /**
  * Which detected side is the lead side? Returns null when unsure.
@@ -13,7 +15,7 @@ const MIN_HEIGHT_DIFF = 0.15; // torso lengths
 export function detectLeadSide(frame: PoseFrame, cue: SideCue, ctx: FrameContext): Side | null {
   const px = (ref: string) => {
     const r = getPoint(frame, ref, ctx);
-    return r && r.visibility >= MIN_VISIBILITY ? { x: r.p.x * ctx.width, y: r.p.y * ctx.height } : null;
+    return r && r.visibility >= MIN_SIDE_VISIBILITY ? { x: r.p.x * ctx.width, y: r.p.y * ctx.height } : null;
   };
   const kneeAngle = (s: Side) => {
     const h = px(`${s}_hip`), k = px(`${s}_knee`), a = px(`${s}_ankle`);

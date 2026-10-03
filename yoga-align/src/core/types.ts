@@ -165,4 +165,6 @@ export interface FrameContext {
   matFront?: 'left' | 'right';
   /** Resolves lead_/trail_ refs. Defaults to 'right'. */
   side?: Side;
+  /** Camera position; in 'side' view midpoints fall back to the visible side. */
+  view?: View;
 }

@@ -4,7 +4,10 @@ import { SCHOOLS } from '../data/schools';
 import { POSE_BY_ID } from '../data/poses';
 import { evaluatePose, medianFrame, poseScore } from '../core/engine';
 import { bestFrame } from '../core/segmentation';
-import type { FrameContext, PoseFrame, Rule, RuleResult, SequenceStep, Status } from '../core/types';
+import { resolveSide } from '../core/match';
+import { detectLeadSide } from '../core/side';
+import { realign } from './align';
+import type { FrameContext, PoseFrame, Rule, RuleResult, SequenceStep, Side, Status } from '../core/types';
 import { drawOverlay, STATUS_COLOR } from './overlay';
 import { grabFrame, releaseVideo } from './video';
 import { stepLabel } from './start';
@@ -27,7 +30,14 @@ interface StepEval {
   frame: PoseFrame | null;
   results: RuleResult[];
   rules: Rule[];
+  /** Step is not part of this view's video. */
+  excluded?: boolean;
+  /** Side used for evaluation (sided poses only) and what the landmarks said. */
+  side?: Side;
+  detected?: Side | null;
 }
+
+const SIDE_DE: Record<Side, string> = { left: 'links', right: 'rechts' };
 
 function evalStep(view: ViewName, i: number): StepEval {
   const vd = state.views[view]!;
@@ -35,6 +45,7 @@ function evalStep(view: ViewName, i: number): StepEval {
   const rules = (school().rules[step.poseId] ?? []).filter((r) => r.view === view);
   const ctx: FrameContext = { width: vd.width, height: vd.height, matFront: view === 'side' ? vd.matFront : undefined, side: step.side };
 
+  if (vd.included[i] === false) return { t: null, frame: null, results: [], rules, excluded: true };
   const override = vd.overrides[i];
   const hold = vd.holds[i];
   let t: number | null = null;
@@ -52,6 +63,12 @@ function evalStep(view: ViewName, i: number): StepEval {
   }
   if (!frames.length) return { t, frame: null, results: [], rules };
   const frame = medianFrame(frames);
+  const pose = POSE_BY_ID[step.poseId];
+  if (pose?.sided) {
+    const detected = pose.sideCue ? detectLeadSide(frame, pose.sideCue, ctx) : null;
+    const side = resolveSide(frame, pose, ctx, step.side);
+    return { t, frame, results: evaluatePose(frame, rules, view, { ...ctx, side }), rules, side, detected };
+  }
   return { t, frame, results: evaluatePose(frame, rules, view, ctx), rules };
 }
 
@@ -67,7 +84,7 @@ export function renderResults(): HTMLElement {
 
   const schoolSel = h('select', {
     'aria-label': 'Schule',
-    onchange: (e: Event) => { state.schoolId = (e.target as HTMLSelectElement).value; rerender(); },
+    onchange: (e: Event) => { state.schoolId = (e.target as HTMLSelectElement).value; realignAll(); rerender(); },
   }, SCHOOLS.map((s) => h('option', { value: s.id, selected: s.id === state.schoolId }, s.name)));
 
   const controls = h('div', { class: 'card controls stack-s' },
@@ -80,7 +97,7 @@ export function renderResults(): HTMLElement {
       h('div', { class: 'seg' }, (['left', 'right'] as const).map((m) =>
         h('button', {
           type: 'button', class: side.matFront === m ? 'on' : '', 'aria-pressed': side.matFront === m,
-          onclick: () => { side.matFront = m; rerender(); },
+          onclick: () => { side.matFront = m; realign(side, 'side', steps()); rerender(); },
         }, m === 'left' ? 'links' : 'rechts'))),
     ) : null,
   );
@@ -94,9 +111,14 @@ export function renderResults(): HTMLElement {
   return h('div', { class: 'stack' }, head, controls, detail(i, present));
 }
 
+function realignAll() {
+  for (const v of VIEWS) { const vd = state.views[v]; if (vd) realign(vd, v, steps()); }
+}
+
 function newAnalysis() {
   for (const v of VIEWS) { const f = state.files[v]; if (f) releaseVideo(f); }
   state.files = {};
+  state.included = {};
   state.views = {};
   state.stepIndex = null;
   go('start');
@@ -112,15 +134,19 @@ function overview(present: ViewName[]): HTMLElement {
     const badges = present.map((v) => {
       const e = evalStep(v, i);
       const hasRules = e.rules.length > 0;
+      if (e.excluded) return h('span', { class: 'badge none' }, VIEW_DE[v], ' nicht in diesem Video');
       if (!e.frame) return h('span', { class: 'badge none' }, VIEW_DE[v], ' nicht gefunden');
       return hasRules ? badge(scoreOf(e), VIEW_DE[v]) : h('span', { class: 'badge none' }, VIEW_DE[v], ' ohne Regeln');
     });
+    const auto = !s.side && p?.sided
+      ? present.map((v) => evalStep(v, i)).find((e) => e.frame && e.detected)?.detected
+      : null;
     return h('li', {},
       h('button', { class: 'card step', type: 'button', onclick: () => { state.stepIndex = i; rerender(); window.scrollTo(0, 0); } },
         h('span', { class: 'num' }, i + 1),
         h('span', { class: 'grow' },
           h('strong', {}, stepLabel(s)),
-          h('span', { class: 'muted block' }, p?.sanskrit ?? '')),
+          h('span', { class: 'muted block' }, p?.sanskrit ?? '', auto ? ` · Seite: ${SIDE_DE[auto]} (erkannt)` : '')),
         h('span', { class: 'badges' }, badges),
       ));
   });
@@ -141,7 +167,7 @@ function detail(i: number, present: ViewName[]): HTMLElement {
   );
   const nav2 = nav.cloneNode(true) as HTMLElement;
   nav2.querySelectorAll('button').forEach((b, k) => { const src = nav.querySelectorAll('button')[k]; b.onclick = () => src.click(); });
-  const sections = VIEWS.map((v) => (state.views[v] ? viewSection(v, i) : missingSection(v, i)));
+  const sections = VIEWS.map((v) => (!state.views[v] ? missingSection(v, i) : state.views[v]!.included[i] === false ? excludedSection(v, i) : viewSection(v, i)));
   return h('div', { class: 'stack' },
     nav,
     h('div', {},
@@ -167,6 +193,30 @@ function missingSection(v: ViewName, i: number): HTMLElement {
   );
 }
 
+function excludedSection(v: ViewName, i: number): HTMLElement {
+  const rules = (school().rules[steps()[i].poseId] ?? []).filter((r) => r.view === v);
+  return h('section', { class: 'card stack-s' },
+    h('h3', {}, `Ansicht ${VIEW_DE[v]}`),
+    h('p', { class: 'muted' }, 'Diese Haltung ist nicht in diesem Video.'),
+    rules.length
+      ? h('ul', { class: 'rules' }, rules.map((r) => h('li', { class: 'rule' }, h('strong', {}, r.label), ' ', h('span', { class: 'muted' }, 'nicht in diesem Video'))))
+      : null,
+  );
+}
+
+function sideInfo(i: number, e: StepEval): HTMLElement | null {
+  const named = steps()[i].side;
+  if (!e.frame || !e.side) return null;
+  const differs = !!e.detected && !!named && e.detected !== named;
+  if (named && !differs) return null;
+  const line = e.detected
+    ? `Seite: ${SIDE_DE[e.side]} (automatisch erkannt)`
+    : `Seite: ${SIDE_DE[e.side]} (nicht erkennbar, Annahme)`;
+  return h('div', {},
+    h('p', {}, line),
+    differs ? h('p', { class: 'muted small-hint' }, `Erkannt: ${SIDE_DE[e.detected!]} – die Bewertung nutzt das erkannte vordere/Stand-Bein`) : null);
+}
+
 // ----- one view of one step -----
 
 function viewSection(v: ViewName, i: number): HTMLElement {
@@ -174,8 +224,25 @@ function viewSection(v: ViewName, i: number): HTMLElement {
   const canvas = h('canvas', { class: 'shot', role: 'img', 'aria-label': `Aufnahme ${VIEW_DE[v]}` });
   const note = h('p', { class: 'muted' });
   const list = h('div', {});
+  const sideBox = h('div', {});
   const timeLabel = h('span', { class: 'muted' });
   let token = 0;
+  let lastDraw: { img: HTMLCanvasElement; e: StepEval } | null = null;
+  let lastScale = 0;
+  const draw = () => {
+    if (!lastDraw) return;
+    const { img, e } = lastDraw;
+    const shown = canvas.clientWidth || Math.min(window.innerWidth - 32, 700);
+    lastScale = img.width / shown;
+    drawOverlay(canvas.getContext('2d')!, img, e.frame, e.results, { width: img.width, height: img.height, showOverlay: state.overlay, scale: lastScale });
+  };
+  // Redraw when the displayed size changes (rotation, resize) so labels keep their size.
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(() => {
+      const shown = canvas.clientWidth;
+      if (lastDraw && shown && Math.abs(lastDraw.img.width / shown - lastScale) > 0.03 * lastScale) draw();
+    }).observe(canvas);
+  }
 
   const slider = h('input', {
     type: 'range', min: 0, max: Math.max(0.1, vd.duration), step: 0.1, 'aria-label': `Zeitpunkt ${VIEW_DE[v]}`,
@@ -192,6 +259,7 @@ function viewSection(v: ViewName, i: number): HTMLElement {
     timeLabel.textContent = fmtTime(t);
     reset.hidden = vd.overrides[i] === null;
     renderRules(list, e);
+    sideBox.replaceChildren(...[sideInfo(i, e)].filter((x): x is HTMLElement => !!x));
     note.textContent = e.frame
       ? (vd.overrides[i] !== null ? `Manuell gewählter Moment, ausgewertet über ±${WINDOW_S} s.` : 'Automatisch erkannte Haltung.')
       : 'Für diese Haltung wurde im Video nichts gefunden. Wähle mit dem Regler den Moment, in dem du in der Haltung bist.';
@@ -200,7 +268,8 @@ function viewSection(v: ViewName, i: number): HTMLElement {
       const img = await grabFrame(vd.file, e.t);
       if (my !== token) return;
       canvas.hidden = false;
-      drawOverlay(canvas.getContext('2d')!, img, e.frame, e.results, { width: img.width, height: img.height, showOverlay: state.overlay });
+      lastDraw = { img, e };
+      draw();
     } catch (err) {
       note.textContent = err instanceof Error ? err.message : String(err);
     }
@@ -211,6 +280,7 @@ function viewSection(v: ViewName, i: number): HTMLElement {
     h('h3', {}, `Ansicht ${VIEW_DE[v]}`),
     canvas,
     note,
+    sideBox,
     h('div', { class: 'row timeline' }, h('span', { class: 'lbl' }, 'Moment'), slider, timeLabel, reset),
     list,
   );

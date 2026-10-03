@@ -8,7 +8,7 @@ import type { Sequence, SequenceStep, Side } from '../core/types';
 let custom: Sequence[] | null = null;
 let draft: { name: string; steps: SequenceStep[] } = { name: '', steps: [] };
 let addPose = POSES[0].id;
-let addSide: Side = 'right';
+let addSide: Side | undefined; // undefined = automatisch
 let storageWarn = false;
 
 export const allSequences = (): Sequence[] => [...BUILT_IN_SEQUENCES, ...(custom ??= loadCustomSequences())];
@@ -88,7 +88,7 @@ function renderBuilder(): HTMLElement {
   const stepRows = draft.steps.map((s, i) =>
     h('li', { class: 'row' },
       h('span', { class: 'grow' }, `${i + 1}. `, POSE_BY_ID[s.poseId]?.nameDe ?? s.poseId, h('span', { class: 'muted' }, ` ${POSE_BY_ID[s.poseId]?.sanskrit ?? ''}`)),
-      POSE_BY_ID[s.poseId]?.sided ? sideSelect(s.side ?? 'right', (v) => { s.side = v; rerender(); }) : null,
+      POSE_BY_ID[s.poseId]?.sided ? sideSelect(s.side, (v) => { s.side = v; rerender(); }) : null,
       h('button', { class: 'icon', type: 'button', 'aria-label': 'Nach oben', disabled: i === 0, onclick: () => move(i, -1) }, '↑'),
       h('button', { class: 'icon', type: 'button', 'aria-label': 'Nach unten', disabled: i === draft.steps.length - 1, onclick: () => move(i, 1) }, '↓'),
       h('button', { class: 'icon', type: 'button', 'aria-label': 'Entfernen', onclick: () => { draft.steps.splice(i, 1); rerender(); } }, '×'),
@@ -103,7 +103,7 @@ function renderBuilder(): HTMLElement {
         pose.sided ? sideSelect(addSide, (v) => { addSide = v; }) : null,
         h('button', {
           class: 'btn', type: 'button',
-          onclick: () => { draft.steps.push(pose.sided ? { poseId: addPose, side: addSide } : { poseId: addPose }); rerender(); },
+          onclick: () => { draft.steps.push(pose.sided && addSide ? { poseId: addPose, side: addSide } : { poseId: addPose }); rerender(); },
         }, 'Hinzufügen'),
       ),
       draft.steps.length ? h('ol', { class: 'list' }, stepRows) : h('p', { class: 'muted' }, 'Noch keine Haltungen. Bei Haltungen mit Seite (z. B. Baum) einfach beide Seiten nacheinander hinzufügen.'),
@@ -135,8 +135,12 @@ function renderBuilder(): HTMLElement {
   return details;
 }
 
-function sideSelect(value: Side, onChange: (v: Side) => void): HTMLSelectElement {
-  return h('select', { 'aria-label': 'Seite', onchange: (e: Event) => onChange((e.target as HTMLSelectElement).value as Side) },
+function sideSelect(value: Side | undefined, onChange: (v: Side | undefined) => void): HTMLSelectElement {
+  return h('select', {
+    'aria-label': 'Seite',
+    onchange: (e: Event) => { const v = (e.target as HTMLSelectElement).value; onChange(v === 'auto' ? undefined : (v as Side)); },
+  },
+    h('option', { value: 'auto', selected: !value }, 'automatisch'),
     h('option', { value: 'right', selected: value === 'right' }, 'rechts'),
     h('option', { value: 'left', selected: value === 'left' }, 'links'));
 }

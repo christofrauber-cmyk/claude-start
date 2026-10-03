@@ -2,7 +2,7 @@ import { h, fmt } from './dom';
 import { go, rerender, state, type ViewName } from './state';
 import { SCHOOLS } from '../data/schools';
 import { POSE_BY_ID } from '../data/poses';
-import { currentSequence } from './start';
+import { currentSequence, stepLabel } from './start';
 import { releaseVideo } from './video';
 
 const VIEW_DE: Record<ViewName, string> = { front: 'Vorne', side: 'Seite' };
@@ -40,10 +40,10 @@ function diagram(): SVGElement {
 function slot(view: ViewName, title: string, hint: string): HTMLElement {
   const file = state.files[view];
   const input = h('input', {
-    type: 'file', accept: 'video/*', capture: 'environment', class: 'sr', id: `file-${view}`,
+    type: 'file', accept: 'video/*,.mov,.mp4', capture: 'environment', class: 'sr', id: `file-${view}`,
     onchange: (e: Event) => {
       const f = (e.target as HTMLInputElement).files?.[0];
-      if (f) { if (file) releaseVideo(file); state.files[view] = f; rerender(); }
+      if (f) { if (file) releaseVideo(file); state.files[view] = f; delete state.included[view]; rerender(); }
     },
   });
   return h('div', { class: 'card slot' + (file ? ' filled' : '') },
@@ -53,8 +53,27 @@ function slot(view: ViewName, title: string, hint: string): HTMLElement {
     input,
     h('div', { class: 'row' },
       h('label', { class: 'btn', for: `file-${view}` }, file ? 'Anderes Video wählen' : 'Video wählen / aufnehmen'),
-      file ? h('button', { class: 'link danger', type: 'button', onclick: () => { releaseVideo(file); delete state.files[view]; rerender(); } }, 'Entfernen') : null,
+      file ? h('button', { class: 'link danger', type: 'button', onclick: () => { releaseVideo(file); delete state.files[view]; delete state.included[view]; rerender(); } }, 'Entfernen') : null,
     ),
+    file ? stepChecklist(view) : null,
+  );
+}
+
+/** Which steps of the sequence does this view's video contain? */
+function stepChecklist(view: ViewName): HTMLElement | null {
+  const seq = currentSequence();
+  if (!seq) return null;
+  if (state.includedSeq !== seq.id) { state.included = {}; state.includedSeq = seq.id; }
+  let flags = state.included[view];
+  if (!flags || flags.length !== seq.steps.length) flags = state.included[view] = seq.steps.map(() => true);
+  const f = flags;
+  return h('fieldset', { class: 'stack-s incl' },
+    h('legend', { class: 'lbl' }, 'In diesem Video enthalten'),
+    h('ul', { class: 'plain' }, seq.steps.map((s, i) =>
+      h('li', {},
+        h('label', { class: 'row check' },
+          h('input', { type: 'checkbox', checked: f[i], onchange: (e: Event) => { f[i] = (e.target as HTMLInputElement).checked; } }),
+          `${i + 1}. ${stepLabel(s)}`)))),
   );
 }
 

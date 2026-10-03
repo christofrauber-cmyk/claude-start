@@ -36,6 +36,11 @@ async function createLandmarker(): Promise<PoseLandmarker> {
   }
 }
 
+const UNSUPPORTED =
+  'Dieses Video kann der Browser nicht abspielen (typisch bei iPhone-Videos im HEVC-Format oder manchen .mov-Dateien). ' +
+  'Bitte als MP4/H.264 exportieren: am iPhone unter Einstellungen › Kamera › Formate › „Kompatibel“ aufnehmen, ' +
+  'oder das Video über Fotos bzw. QuickTime als MP4 exportieren, und dann erneut hochladen.';
+
 function loadVideo(src: string): Promise<HTMLVideoElement> {
   return new Promise((resolve, reject) => {
     const v = document.createElement('video');
@@ -43,14 +48,15 @@ function loadVideo(src: string): Promise<HTMLVideoElement> {
     v.playsInline = true;
     v.preload = 'auto';
     v.crossOrigin = 'anonymous';
-    const timer = setTimeout(() => reject(new Error('Das Video konnte nicht geladen werden (Zeitüberschreitung).')), 30000);
+    const timer = setTimeout(() => reject(new Error('Das Video konnte nicht geladen werden (Zeitüberschreitung). ' + UNSUPPORTED)), 30000);
     v.onloadeddata = () => {
       clearTimeout(timer);
-      resolve(v);
+      if (!v.videoWidth || !v.videoHeight) reject(new Error(UNSUPPORTED));
+      else resolve(v);
     };
     v.onerror = () => {
       clearTimeout(timer);
-      reject(new Error('Das Video konnte nicht gelesen werden. Bitte ein anderes Format (z. B. MP4/H.264) versuchen.'));
+      reject(new Error(UNSUPPORTED));
     };
     v.src = src;
     v.load();

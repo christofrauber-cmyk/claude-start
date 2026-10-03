@@ -11,8 +11,12 @@ export interface ViewData {
   height: number;
   duration: number;
   frames: TimedFrame[];
-  /** One entry per sequence step (null = not found). */
+  /** All holds found in the video (before assigning them to steps). */
+  allHolds: Hold[];
+  /** One entry per sequence step (null = not found or not in this video). */
   holds: (Hold | null)[];
+  /** Per step: is it contained in this video? */
+  included: boolean[];
   /** Side view only: where the mat front is in the image. */
   matFront: 'left' | 'right';
   /** Manually chosen moment per step (seconds), if any. */
@@ -24,6 +28,10 @@ export interface AppState {
   schoolId: string;
   sequenceId: string | null;
   files: Partial<Record<ViewName, File>>;
+  /** Record screen: which steps each video contains (per view, one flag per step). */
+  included: Partial<Record<ViewName, boolean[]>>;
+  /** Sequence id the `included` flags belong to. */
+  includedSeq: string | null;
   views: Partial<Record<ViewName, ViewData>>;
   stepIndex: number | null; // null = overview
   overlay: boolean;
@@ -37,6 +45,8 @@ export const state: AppState = {
   schoolId: '',
   sequenceId: null,
   files: {},
+  included: {},
+  includedSeq: null,
   views: {},
   stepIndex: null,
   overlay: true,

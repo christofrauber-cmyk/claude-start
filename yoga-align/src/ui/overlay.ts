@@ -9,6 +9,8 @@ export interface OverlayOptions {
   showOverlay: boolean;
   /** Draw the measured skeleton (default true). */
   showSkeleton?: boolean;
+  /** Natural pixels per displayed CSS pixel (naturalWidth / displayedWidth). Default 1. */
+  scale?: number;
 }
 
 export const STATUS_COLOR: Record<Status, string> = {
@@ -37,8 +39,11 @@ export function drawOverlay(
   ctx.drawImage(image, 0, 0, W, H);
   if (!opts.showOverlay) return;
 
-  const lw = Math.max(2, Math.max(W, H) * 0.0035);
-  const font = Math.max(13, Math.min(W, H) * 0.036);
+  // Sizes are specified in displayed CSS pixels and converted to natural pixels.
+  const scale = Math.max(0.2, opts.scale ?? 1);
+  const lw = 1.8 * scale; // main lines ≈ 2.9 CSS px
+  const font = 12.5 * scale; // labels ≈ 12.5 CSS px
+  const placed: { x: number; y: number; w: number; h: number }[] = [];
   const px = (p: Pt): [number, number] => [p.x * W, p.y * H];
 
   ctx.save();
@@ -99,18 +104,29 @@ export function drawOverlay(
     ctx.textBaseline = 'middle';
     const tw = ctx.measureText(text).width;
     const padX = font * 0.45, bh = font * 1.5;
-    let x = at.x * W + font * 0.6, y = at.y * H - font * 1.1;
-    x = Math.min(Math.max(x, 2), W - tw - padX * 2 - 2);
-    y = Math.min(Math.max(y, bh / 2 + 2), H - bh / 2 - 2);
+    const bw = tw + padX * 2;
+    const x0 = Math.min(Math.max(at.x * W + font * 0.6, 2), W - bw - 2);
+    const clampY = (v: number) => Math.min(Math.max(v, bh / 2 + 2), H - bh / 2 - 2);
+    const hits = (yy: number) => placed.some((b) => x0 < b.x + b.w && x0 + bw > b.x && yy - bh / 2 < b.y + b.h && yy + bh / 2 > b.y);
+    // Greedy: try the preferred spot, then nudge down/up in label-height steps.
+    const y0 = clampY(at.y * H - font * 1.1);
+    let y = y0;
+    for (const k of [1, -1, 2, -2, 3, -3]) {
+      if (!hits(y)) break;
+      const cand = clampY(y0 + k * bh * 1.05);
+      if (!hits(cand)) { y = cand; break; }
+    }
+    const x = x0;
+    placed.push({ x, y: y - bh / 2, w: bw, h: bh });
     ctx.fillStyle = 'rgba(20,24,28,0.78)';
     ctx.beginPath();
     ctx.roundRect(x, y - bh / 2, tw + padX * 2, bh, bh / 2);
     ctx.fill();
     ctx.fillStyle = '#fff';
-    ctx.fillText(text, x + padX, y + 1);
+    ctx.fillText(text, x + padX, y + 0.5 * scale);
     ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.arc(x + padX * 0.55, y - bh / 2 + bh * 0.2, font * 0.12, 0, Math.PI * 2);
+    ctx.arc(x + padX * 0.55, y - bh / 2 + bh * 0.2, font * 0.14, 0, Math.PI * 2);
     ctx.fill();
   };
 

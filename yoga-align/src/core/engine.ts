@@ -128,7 +128,7 @@ const STATUS_ORDER: Record<Status, number> = { major: 0, minor: 1, ok: 2, unmeas
 export function evaluatePose(frame: PoseFrame, rules: Rule[], view: View, ctx: FrameContext): RuleResult[] {
   return rules
     .filter((r) => r.view === view)
-    .map((r) => evaluateRule(frame, r, ctx))
+    .map((r) => evaluateRule(frame, r, { ...ctx, view }))
     .sort((x, y) => STATUS_ORDER[x.status] - STATUS_ORDER[y.status] || (y.rule.weight ?? 2) - (x.rule.weight ?? 2) || (y.deviation ?? 0) - (x.deviation ?? 0));
 }
 

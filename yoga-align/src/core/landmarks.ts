@@ -71,6 +71,12 @@ export function getPoint(frame: PoseFrame, ref: JointRef, ctx: FrameContext): Re
     const pa = getPoint(frame, a, ctx);
     const pb = getPoint(frame, b, ctx);
     if (!pa || !pb) return null;
+    // From the side, left and right overlap and the far one is often hidden:
+    // then the visible one is a better midpoint than the average.
+    if (ctx.view === 'side') {
+      const [va, vb] = [pa.visibility >= MIN_VISIBILITY, pb.visibility >= MIN_VISIBILITY];
+      if (va !== vb) return va ? pa : pb;
+    }
     return {
       p: { x: (pa.p.x + pb.p.x) / 2, y: (pa.p.y + pb.p.y) / 2 },
       visibility: Math.min(pa.visibility, pb.visibility),
