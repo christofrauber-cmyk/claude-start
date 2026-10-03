@@ -1,4 +1,5 @@
 import type { PoseFrame } from './types';
+import { medianFrame } from './engine';
 import { LANDMARK_INDEX } from './landmarks';
 
 export interface TimedFrame {
@@ -13,8 +14,11 @@ export interface Hold {
 }
 
 export interface HoldOptions {
-  motionThreshold?: number; // default 0.25
-  minDuration?: number; // default 1.5 seconds
+  motionThreshold?: number; // body sizes per second, default 0.07
+  aspect?: number; // video width / height, default 1
+  smoothWindow?: number; // median filter half-width in samples, default 3
+  lag?: number; // compare shapes this many samples apart, default 4
+  minDuration?: number; // default 1.0 seconds
   maxGap?: number; // default 0.6 seconds
 }
 
@@ -29,81 +33,118 @@ const MOTION_LANDMARKS = [
 ];
 
 /**
- * Mean Euclidean displacement of key landmarks, normalized by torso length.
- * Returns Infinity if torso length is ~0.
+ * How much the body moved between two frames, relative to body size.
+ * Median displacement of the visible key joints, divided by the larger side
+ * of their bounding box. The body box (not the torso length) is the scale,
+ * because the torso shrinks to almost nothing when seen end-on in forward
+ * bends. `aspect` = video width / height, so x and y are measured alike.
+ * Returns Infinity if too few joints are visible.
  */
-export function frameMotion(a: PoseFrame, b: PoseFrame): number {
-  // Compute torso length: distance between midpoint of shoulders and midpoint of hips
-  const aMidShoulder = {
-    x: (a[LANDMARK_INDEX.left_shoulder].x + a[LANDMARK_INDEX.right_shoulder].x) / 2,
-    y: (a[LANDMARK_INDEX.left_shoulder].y + a[LANDMARK_INDEX.right_shoulder].y) / 2,
-  };
-  const aMidHip = {
-    x: (a[LANDMARK_INDEX.left_hip].x + a[LANDMARK_INDEX.right_hip].x) / 2,
-    y: (a[LANDMARK_INDEX.left_hip].y + a[LANDMARK_INDEX.right_hip].y) / 2,
-  };
-  const torsoLength = Math.hypot(aMidHip.x - aMidShoulder.x, aMidHip.y - aMidShoulder.y);
-  if (torsoLength === 0) return Infinity;
-
-  let totalDisplacement = 0;
+export function frameMotion(a: PoseFrame, b: PoseFrame, aspect = 1): number {
+  const moves: number[] = [];
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
   for (const name of MOTION_LANDMARKS) {
     const idx = LANDMARK_INDEX[name];
-    const dx = b[idx].x - a[idx].x;
-    const dy = b[idx].y - a[idx].y;
-    totalDisplacement += Math.hypot(dx, dy);
+    const pa = a[idx], pb = b[idx];
+    if (!pa || !pb || (pa.visibility ?? 1) < 0.5 || (pb.visibility ?? 1) < 0.5) continue;
+    moves.push(Math.hypot((pb.x - pa.x) * aspect, pb.y - pa.y));
+    minX = Math.min(minX, pa.x * aspect); maxX = Math.max(maxX, pa.x * aspect);
+    minY = Math.min(minY, pa.y); maxY = Math.max(maxY, pa.y);
   }
-
-  return totalDisplacement / MOTION_LANDMARKS.length / torsoLength;
+  const size = Math.max(maxX - minX, maxY - minY);
+  if (moves.length < 4 || !(size > 0)) return Infinity;
+  moves.sort((x, y) => x - y);
+  return moves[moves.length >> 1] / size;
 }
 
 /**
- * Detect holds: periods of low motion.
- * - Compute motion per second between consecutive non-null frames.
- * - Smooth with centered moving average of 3 samples.
- * - Mark "still" if smoothed motion < motionThreshold.
- * - Consecutive still samples form runs; null frames or gaps > maxGap break them.
- * - Keep runs with duration >= minDuration.
+ * Detect holds: periods where the body stays in one shape.
+ * Landmarks are first median-filtered over ±`smoothWindow` samples (removes
+ * jitter of hidden joints, e.g. in forward bends), then the body shape is
+ * compared `lag` samples before and after each sample (~1 s apart). Samples
+ * below `motionThreshold` (body sizes per second) are still; consecutive
+ * still samples form a hold. A missing person or a gap > maxGap ends a hold.
  */
 export function detectHolds(frames: TimedFrame[], opts: HoldOptions = {}): Hold[] {
-  const motionThreshold = opts.motionThreshold ?? 0.25;
-  const minDuration = opts.minDuration ?? 1.5;
+  const motionThreshold = opts.motionThreshold ?? 0.07;
+  const minDuration = opts.minDuration ?? 1.0;
   const maxGap = opts.maxGap ?? 0.6;
+  const aspect = opts.aspect ?? 1;
+  const W = opts.smoothWindow ?? 3;
+  const LAG = opts.lag ?? 4;
+  const n = frames.length;
 
-  // One motion sample per pair of consecutive frames; a null frame or a long
-  // gap marks the pair as "broken" (never still).
-  interface Sample { from: TimedFrame; to: TimedFrame; motion: number; broken: boolean }
-  const samples: Sample[] = [];
-  for (let i = 1; i < frames.length; i++) {
-    const from = frames[i - 1], to = frames[i];
-    const dt = to.t - from.t;
-    const broken = !from.frame || !to.frame || dt <= 0 || dt > maxGap;
-    const motion = broken ? Infinity : frameMotion(from.frame!, to.frame!) / dt;
-    samples.push({ from, to, motion, broken });
-  }
+  const smooth = frames.map((f, i) => {
+    if (!f.frame) return null;
+    const win: PoseFrame[] = [];
+    for (let j = Math.max(0, i - W); j <= Math.min(n - 1, i + W); j++) {
+      const g = frames[j];
+      if (g.frame && Math.abs(g.t - f.t) <= maxGap * (Math.abs(j - i) || 1)) win.push(g.frame);
+    }
+    return medianFrame(win);
+  });
 
-  // Centered moving average over 3 samples, not crossing broken samples.
-  const still = samples.map((s, i) => {
-    if (s.broken) return false;
-    const vals = [s.motion];
-    if (i > 0 && !samples[i - 1].broken) vals.push(samples[i - 1].motion);
-    if (i < samples.length - 1 && !samples[i + 1].broken) vals.push(samples[i + 1].motion);
-    return vals.reduce((a, b) => a + b, 0) / vals.length < motionThreshold;
+  const still = frames.map((f, i) => {
+    if (!f.frame) return false;
+    // Near the ends of the video, use the available side only.
+    const ia = Math.max(0, i - LAG), ib = Math.min(n - 1, i + LAG);
+    const a = smooth[ia], b = smooth[ib];
+    const dt = frames[ib].t - frames[ia].t;
+    if (!a || !b || dt <= 0) return false;
+    return frameMotion(a, b, aspect) / dt < motionThreshold;
   });
 
   const holds: Hold[] = [];
-  let runStart = -1;
-  const close = (endIdx: number) => {
-    const runFrames = [samples[runStart].from, ...samples.slice(runStart, endIdx + 1).map((s) => s.to)];
-    const start = runFrames[0].t, end = runFrames[runFrames.length - 1].t;
-    if (end - start >= minDuration) holds.push({ start, end, frames: runFrames });
-    runStart = -1;
+  let run: TimedFrame[] = [];
+  const close = () => {
+    if (run.length && run[run.length - 1].t - run[0].t >= minDuration) {
+      holds.push({ start: run[0].t, end: run[run.length - 1].t, frames: run });
+    }
+    run = [];
   };
-  for (let i = 0; i < samples.length; i++) {
-    if (still[i] && runStart === -1) runStart = i;
-    else if (!still[i] && runStart !== -1) close(i - 1);
+  for (let i = 0; i < n; i++) {
+    if (still[i] && run.length && frames[i].t - run[run.length - 1].t > maxGap) close();
+    if (still[i]) run.push(frames[i]);
+    else close();
   }
-  if (runStart !== -1) close(samples.length - 1);
+  close();
   return holds;
+}
+
+/**
+ * Assign holds to sequence steps in temporal order, maximizing the total fit.
+ * `fit(hold, stepIndex)` returns 0..1 (how well the hold looks like that
+ * step's pose). Every step gets at most one hold, every hold at most one
+ * step, and the order is kept. A matched step earns a base bonus, so steps
+ * stay unmatched only when there are not enough holds.
+ */
+export function alignHolds(holds: Hold[], steps: number, fit: (hold: Hold, step: number) => number): (Hold | null)[] {
+  const BASE = 0.5;
+  const value = (h: Hold, s: number) => BASE + fit(h, s) + 0.1 * Math.min(h.end - h.start, 10) / 10;
+  const m = holds.length;
+  // best[i][j]: best total using the first i steps and the first j holds.
+  const best: number[][] = Array.from({ length: steps + 1 }, () => new Array(m + 1).fill(0));
+  const choice: (0 | 1 | 2)[][] = Array.from({ length: steps + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = 1; i <= steps; i++) {
+    for (let j = 0; j <= m; j++) {
+      let v = best[i - 1][j], c: 0 | 1 | 2 = 0; // step i unmatched
+      if (j > 0 && best[i][j - 1] > v) { v = best[i][j - 1]; c = 1; } // hold j unused
+      if (j > 0) {
+        const w = best[i - 1][j - 1] + value(holds[j - 1], i - 1);
+        if (w > v) { v = w; c = 2; }
+      }
+      best[i][j] = v;
+      choice[i][j] = c;
+    }
+  }
+  const out: (Hold | null)[] = new Array(steps).fill(null);
+  for (let i = steps, j = m; i > 0;) {
+    const c = choice[i][j];
+    if (c === 2) { out[i - 1] = holds[j - 1]; i--; j--; }
+    else if (c === 1) j--;
+    else i--;
+  }
+  return out;
 }
 
 /**

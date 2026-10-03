@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { PoseFrame } from './types';
-import type { TimedFrame } from './segmentation';
-import { frameMotion, detectHolds, assignHolds, bestFrame, guessMatFront } from './segmentation';
+import type { Hold, TimedFrame } from './segmentation';
+import { alignHolds, frameMotion, detectHolds, assignHolds, bestFrame, guessMatFront } from './segmentation';
 import { LANDMARK_INDEX } from './landmarks';
 
 /** Helper: create a default landmark with neutral position. */
@@ -77,13 +77,37 @@ describe('frameMotion', () => {
     expect(motion).toBeGreaterThan(0);
   });
 
-  it('should return Infinity for zero torso length', () => {
+  it('stays finite when the torso is seen end-on (forward bend from the front)', () => {
     const frame1 = makeStandingFrame();
-    const frame2 = makeStandingFrame();
-    // Move shoulders to hips position in frame1 (zero torso for normalization)
     frame1[LANDMARK_INDEX.left_shoulder] = { ...frame1[LANDMARK_INDEX.left_shoulder], y: frame1[LANDMARK_INDEX.left_hip].y };
     frame1[LANDMARK_INDEX.right_shoulder] = { ...frame1[LANDMARK_INDEX.right_shoulder], y: frame1[LANDMARK_INDEX.right_hip].y };
-    expect(frameMotion(frame1, frame2)).toBe(Infinity);
+    expect(frameMotion(frame1, frame1)).toBe(0);
+  });
+
+  it('returns Infinity when fewer than 4 key joints are visible', () => {
+    const frame = makeStandingFrame().map((l) => ({ ...l, visibility: 0.1 }));
+    expect(frameMotion(frame, frame)).toBe(Infinity);
+  });
+});
+
+describe('alignHolds', () => {
+  const hold = (start: number, end: number): Hold => ({ start, end, frames: [] });
+
+  it('uses the fit to skip a spurious hold, keeping order', () => {
+    const holds = [hold(0, 5), hold(6, 12), hold(13, 15), hold(16, 18)];
+    // Step 0 fits hold 0, step 1 fits hold 2 and 3 – hold 1 (long, standing around) fits nothing.
+    const fit = (h: Hold, s: number) => (s === 0 && h.start === 0) || (s === 1 && h.start === 13) || (s === 2 && h.start === 16) ? 1 : 0;
+    expect(alignHolds(holds, 3, fit).map((h) => h?.start)).toEqual([0, 13, 16]);
+  });
+
+  it('leaves trailing steps empty when holds run out', () => {
+    expect(alignHolds([hold(0, 3)], 2, () => 0.5).map((h) => h?.start ?? null)).toEqual([0, null]);
+  });
+
+  it('never assigns one hold twice', () => {
+    const out = alignHolds([hold(0, 3), hold(4, 6)], 3, () => 1);
+    expect(out.filter(Boolean).length).toBe(2);
+    expect(new Set(out.filter(Boolean)).size).toBe(2);
   });
 });
 

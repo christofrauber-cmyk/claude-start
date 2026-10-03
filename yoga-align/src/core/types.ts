@@ -1,3 +1,5 @@
+import type { ShapeSignature } from './signature';
+
 // Core data model. Everything the rule engine and the UI share lives here.
 
 /**
@@ -75,6 +77,16 @@ export interface Rule {
   weight?: 1 | 2 | 3;
 }
 
+/**
+ * How to recognise the lead side of a sided pose in a frame:
+ * - bentKnee:    lead = the more bent knee (Warriors, lunges, side angle)
+ * - straightKnee: lead = the straighter knee (Janu Sirsasana)
+ * - lowerAnkle:  lead = the standing leg (Warrior III, Half Moon)
+ * - higherAnkle: lead = the lifted leg (Tree)
+ * - lowerWrist:  lead = the side of the lower hand (Triangle)
+ */
+export type SideCue = 'bentKnee' | 'straightKnee' | 'lowerAnkle' | 'higherAnkle' | 'lowerWrist';
+
 export type PoseCategory = 'standing' | 'forward-bend' | 'backbend' | 'twist' | 'seated' | 'inversion' | 'arm-balance' | 'prone' | 'supine';
 
 export interface PoseDef {
@@ -89,6 +101,10 @@ export interface PoseDef {
   bestViews: View[];
   /** Notes on detection limits for this pose (occlusion, depth...). */
   limits?: string;
+  /** Sided poses: how to tell the lead side from the landmarks. */
+  sideCue?: SideCue;
+  /** Coarse shape used to recognise the pose in a video (see signature.ts). */
+  shape?: ShapeSignature;
 }
 
 export interface School {
