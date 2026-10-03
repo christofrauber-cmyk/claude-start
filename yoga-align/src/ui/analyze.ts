@@ -21,7 +21,10 @@ export function renderAnalyze(): HTMLElement {
     running = true;
     void run(bar, text).catch((e: unknown) => {
       err.hidden = false;
-      err.textContent = e instanceof Error ? e.message : String(e);
+      err.textContent = e instanceof Error
+        ? e.message
+        // MediaPipe/network failures surface as bare Events (e.g. script or model load error).
+        : 'Das Erkennungsmodell konnte nicht geladen werden. Bitte Internetverbindung prüfen und erneut versuchen (nur das Modell wird geladen, das Video bleibt auf dem Gerät).';
       text.textContent = 'Die Analyse ist fehlgeschlagen.';
       back.hidden = false;
     }).finally(() => { running = false; });
