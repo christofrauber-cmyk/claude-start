@@ -14,6 +14,9 @@ import type { Measure, Rule, School } from '../../core/types';
  *      Vrksasana: das ANGEHOBENE Bein ("Baum rechts" = rechter Fuß am linken Oberschenkel, wie in Light on Yoga);
  *        trail = Standbein.
  *      Ardha Chandrasana: STANDBEIN (kommt aus Trikonasana derselben Seite); trail = angehobenes Bein.
+ *      Anjaneyasana: vorderes (gebeugtes) Bein; trail = hinteres Bein mit dem Knie am Boden.
+ *      Virabhadrasana III: STANDBEIN; trail = angehobenes Bein.
+ *      Janu Sirsasana: das GESTRECKTE Bein (über das sich der Rumpf beugt); trail = gebeugtes Bein.
  *  - Winkel = Innenwinkel 0..180 (180 = gestreckt), tilt = Abweichung von Senkrechter/Waagrechter,
  *    offset in Rumpflängen.
  *
@@ -57,6 +60,21 @@ import type { Measure, Rule, School } from '../../core/types';
  * Setu Bandha Sarvangasana: Nacken-/Halswirbelsäule flach, Kinn zum Brustbein (Kinnlage);
  *   Schulterblätter unterstützt / Schultern untergerollt; Brustbein-Hebung und Brustkorbbreite;
  *   Schienbein-/Fußparallelität; Oberarm-Rotation; Sakrum/Lendenbogen verteilt; Handgelenk-Verschränkung.
+ * Urdhva Hastasana: Handflächen zusammen oder schulterbreit parallel; Oberarm-Außenrotation und Schulterblätter
+ *   nach unten (Schultern nicht zu den Ohren); Rippen/unterer Rücken (Hohlkreuz) nur über Rumpfneigung grob;
+ *   Fingerstreckung; Kopfhaltung/Blick; Gewichtsverteilung der Füße.
+ * Ardha Uttanasana: Wirbelsäulen-Konkavität (lange, hohle Wirbelsäule vs. Rundrücken) – mit 33 Punkten nicht messbar,
+ *   nur Nacken-Linie und Rumpfwinkel kodiert; Beckenkippung (Sitzbeine nach oben); Gewicht auf den Fersen;
+ *   Schulterblätter in den Rücken; Handdruck auf Schienbeine/Boden; Kniescheiben hoch.
+ * Anjaneyasana: Lage des hinteren Knies und Fußrückens am Boden (Bodenkontakt, Polster) und Fußstellung hinten;
+ *   Beckenkippung (Steißbein ein) und Hohlkreuz; Hüftbeuger-Dehnung des hinteren Beins; Beckenrotation (Quadratstellung);
+ *   Handflächen zusammen; Kopf zurück (Nacken); Gewicht gleichmäßig zwischen den Beinen.
+ * Virabhadrasana III: Beckenrotation (angehobene Hüfte nach unten drehen) nur grob über die Hüftlinie in 'front';
+ *   Fuß des angehobenen Beins (Zehen nach unten, Ferse aktiv) und Innenrotation des angehobenen Oberschenkels;
+ *   Standfuß-Gewölbe; Standknie-Überstreckung; Wirbelsäulenstreckung; Handflächen zusammen; Blickpunkt.
+ * Janu Sirsasana: Wirbelsäulenrundung beim Vorbeugen (konkav vs. rund) und Bauchnabel-zu-Oberschenkel; Rumpfdrehung
+ *   zum gestreckten Bein (Brustbein über die Beinmitte); Ferse am Damm, Knieöffnung (Außenrotation) in 2D kaum;
+ *   Sitzbeingewicht und Beckenkippung; Fußzug des gestreckten Beins (Zehen, Ferse); Kopf/Nacken entspannt.
  */
 
 const angle = (a: string, b: string, c: string): Measure => ({ kind: 'angle', a, b, c });
@@ -914,6 +932,306 @@ const rules: Record<string, Rule[]> = {
       cueBelow: 'Knie über dem Fuß halten.',
       cueAbove: 'Rechtes Knie über die Mitte des Fußes ausrichten, weder nach innen noch außen kippen.',
       why: 'Die Knie bleiben parallel über den Füßen und geben dem Becken eine gerade Basis.', weight: 2,
+    },
+  ],
+
+  // ----------------------------------------------------- Urdhva Hastasana
+  urdhva_hastasana: [
+    {
+      id: 'urdhva_hastasana.legs_straight', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
+      range: [168, 180], label: 'Beine',
+      cueBelow: 'Knie strecken: Oberschenkel zurück, Kniescheiben hochziehen.',
+      cueAbove: 'Knie nicht überstrecken: Kniescheiben hoch, Schienbeine nach vorn.',
+      why: 'Die Beine stehen wie in Tadasana fest und gestreckt – sie tragen die Streckung der Arme.', weight: 3,
+    },
+    {
+      id: 'urdhva_hastasana.hip_over_ankle', view: 'side', measure: offset('mid_hip', 'mid_ankle', 'x', undefined, true),
+      range: [0, 0.15], label: 'Hüfte über Knöchel',
+      cueBelow: 'Becken über den Fersen halten.',
+      cueAbove: 'Becken über die Knöchel bringen: Gewicht in die Fersenmitte, nicht ins Hohlkreuz schieben.',
+      why: 'Auch mit erhobenen Armen läuft die Schwerelinie durch das Fußgelenk.', weight: 2,
+    },
+    {
+      id: 'urdhva_hastasana.trunk_vertical', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      range: [0, 8], label: 'Rumpf',
+      cueBelow: 'Rumpf aufrecht halten.',
+      cueAbove: 'Rumpf aufrichten: nicht zurücklehnen, Brustbein heben, untere Rippen zurück.',
+      why: 'Der Rumpf bleibt senkrecht; die Arme verlängern ihn, ohne dass der untere Rücken einknickt.', weight: 3,
+    },
+    {
+      id: 'urdhva_hastasana.arms_in_line', view: 'side', measure: angle('mid_hip', 'mid_shoulder', 'mid_wrist'),
+      range: [155, 180], margin: 10, label: 'Arme in Linie',
+      cueBelow: 'Arme in Verlängerung des Rumpfes strecken, Oberarme neben die Ohren.',
+      cueAbove: 'Arme in Linie mit dem Rumpf halten.',
+      why: 'Die Oberarme liegen neben den Ohren; Arme und Rumpf bilden eine lange senkrechte Linie.', weight: 3,
+    },
+    {
+      id: 'urdhva_hastasana.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      range: [0, 6], label: 'Rumpf seitlich',
+      cueBelow: 'Rumpf aufrecht halten.',
+      cueAbove: 'Rumpf nicht zur Seite kippen: Brustbein mittig über das Becken heben.',
+      why: 'Die Mittelachse steht senkrecht, damit die Wirbelsäule gleichmäßig lang wird.', weight: 3,
+    },
+    {
+      id: 'urdhva_hastasana.arms_vertical', view: 'front', measure: tilt('mid_shoulder', 'mid_wrist', 'vertical'),
+      range: [0, 10], label: 'Arme senkrecht',
+      cueBelow: 'Arme senkrecht halten.',
+      cueAbove: 'Arme parallel senkrecht nach oben strecken, Handflächen einander zugewandt.',
+      why: 'Die parallel gestreckten Arme verlängern die Mittelachse nach oben.', weight: 2,
+    },
+    {
+      id: 'urdhva_hastasana.left_arm_straight', view: 'front', measure: angle('left_shoulder', 'left_elbow', 'left_wrist'),
+      range: [165, 180], label: 'Linker Arm',
+      cueBelow: 'Linken Ellbogen strecken: Finger weit nach oben, Oberarm neben das Ohr.',
+      cueAbove: 'Linken Ellbogen nicht überstrecken, Oberarmmuskeln aktiv.',
+      why: 'Die Arme sind bis in die Fingerspitzen gestreckt, damit sich die Seiten des Rumpfes heben.', weight: 2,
+    },
+    {
+      id: 'urdhva_hastasana.right_arm_straight', view: 'front', measure: angle('right_shoulder', 'right_elbow', 'right_wrist'),
+      range: [165, 180], label: 'Rechter Arm',
+      cueBelow: 'Rechten Ellbogen strecken: Finger weit nach oben, Oberarm neben das Ohr.',
+      cueAbove: 'Rechten Ellbogen nicht überstrecken, Oberarmmuskeln aktiv.',
+      why: 'Die Arme sind bis in die Fingerspitzen gestreckt, damit sich die Seiten des Rumpfes heben.', weight: 2,
+    },
+  ],
+
+  // ----------------------------------------------------- Ardha Uttanasana
+  ardha_uttanasana: [
+    {
+      id: 'ardha_uttanasana.legs_straight', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
+      range: [165, 180], label: 'Beine',
+      cueBelow: 'Knie strecken: Oberschenkel hochziehen, Kniescheiben hoch.',
+      cueAbove: 'Knie nicht überstrecken: Kniescheiben hoch, Oberschenkel zurückdrücken.',
+      why: 'Fest gestreckte Beine sind die Basis, damit der Rumpf aus den Hüften nach vorn schwingen kann.', weight: 3,
+    },
+    {
+      id: 'ardha_uttanasana.legs_vertical', view: 'side', measure: tilt('mid_hip', 'mid_ankle', 'vertical'),
+      range: [0, 12], label: 'Beine senkrecht',
+      cueBelow: 'Beine senkrecht halten.',
+      cueAbove: 'Becken über die Knöchel bringen: Sitzbeine nach oben und hinten, Gewicht in die Fersen.',
+      why: 'Die senkrechten Beine tragen das Becken; die Beuge kommt aus den Hüften, nicht aus dem Rücken.', weight: 3,
+    },
+    {
+      id: 'ardha_uttanasana.trunk_horizontal', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),
+      range: [0, 20], margin: 10, label: 'Rumpf waagrecht',
+      cueBelow: 'Rumpf waagrecht halten.',
+      cueAbove: 'Rumpf weiter aus den Hüften nach vorn strecken, bis er etwa parallel zum Boden ist.',
+      why: 'Der Rumpf liegt lang und waagrecht, die Wirbelsäule streckt sich nach vorn statt nach unten zu hängen.', weight: 3,
+    },
+    {
+      id: 'ardha_uttanasana.neck_long', view: 'side', measure: angle('mid_ear', 'mid_shoulder', 'mid_hip'),
+      range: [140, 180], margin: 10, label: 'Nacken',
+      cueBelow: 'Nacken lang halten, Blick zum Boden vor die Füße, Kopf nicht hochreißen oder hängen lassen.',
+      cueAbove: 'Kopf in Verlängerung der Wirbelsäule halten.',
+      why: 'Der Nacken bleibt in der Linie der Wirbelsäule, die konkav und lang bleibt.', weight: 1,
+    },
+    {
+      id: 'ardha_uttanasana.hands_down', view: 'side', measure: offset('mid_wrist', 'mid_hip', 'y', 'down'),
+      range: [0.3, 2.0], margin: 0.2, label: 'Hände',
+      cueBelow: 'Hände tiefer auf die Schienbeine oder den Boden legen, Arme lang.',
+      cueAbove: 'Hände etwas höher auf die Schienbeine oder Blöcke stützen, um den Rücken nicht zu runden.',
+      why: 'Die Hände stützen auf Schienbeinen oder Boden und geben Widerstand, um den Rumpf zu verlängern.', weight: 1,
+    },
+    {
+      id: 'ardha_uttanasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
+      range: [0, 6], label: 'Becken',
+      cueBelow: 'Becken waagrecht halten.',
+      cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch, Gewicht gleichmäßig auf beide Füße.',
+      why: 'Das Becken beugt symmetrisch aus den Hüftgelenken.', weight: 2,
+    },
+    {
+      id: 'ardha_uttanasana.left_leg_vertical', view: 'front', measure: tilt('left_hip', 'left_ankle', 'vertical'),
+      range: [0, 10], label: 'Linkes Bein',
+      cueBelow: 'Bein senkrecht halten.',
+      cueAbove: 'Linkes Bein senkrecht ausrichten: Oberschenkel nicht nach außen kippen lassen.',
+      why: 'Parallele, senkrechte Beine geben der Vorbeuge eine klare Basis.', weight: 2,
+    },
+    {
+      id: 'ardha_uttanasana.right_leg_vertical', view: 'front', measure: tilt('right_hip', 'right_ankle', 'vertical'),
+      range: [0, 10], label: 'Rechtes Bein',
+      cueBelow: 'Bein senkrecht halten.',
+      cueAbove: 'Rechtes Bein senkrecht ausrichten: Oberschenkel nicht nach außen kippen lassen.',
+      why: 'Parallele, senkrechte Beine geben der Vorbeuge eine klare Basis.', weight: 2,
+    },
+  ],
+
+  // --------------------------------------------------- Anjaneyasana (lead = vorderes gebeugtes Bein, trail = hinteres Bein, Knie am Boden)
+  anjaneyasana: [
+    {
+      id: 'anjaneyasana.front_knee_angle', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
+      range: [82, 105], margin: 10, label: 'Vorderes Knie',
+      cueBelow: 'Vorderes Knie nicht weiter als 90° beugen: Schritt weiter öffnen.',
+      cueAbove: 'Vorderes Knie tiefer beugen, Becken nach vorn und unten sinken lassen.',
+      why: 'Das vordere Knie bildet etwa einen rechten Winkel, das Becken sinkt tief zwischen die Beine.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana.knee_over_heel', view: 'side', measure: offset('lead_knee', 'lead_ankle', 'x', 'forward'),
+      range: [-0.15, 0.12], margin: 0.1, label: 'Knie über Ferse',
+      cueBelow: 'Knie nach vorn über die Ferse bringen.',
+      cueAbove: 'Knie zurück über die Ferse, Schienbein senkrecht: Schritt weiter öffnen.',
+      why: 'Das Schienbein steht senkrecht; das Knie schiebt nicht über den Fuß hinaus und wird nicht überlastet.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana.back_thigh', view: 'side', measure: tilt('trail_hip', 'trail_knee', 'vertical'),
+      range: [0, 30], margin: 12, label: 'Hinterer Oberschenkel',
+      cueBelow: 'Hinteren Oberschenkel senkrecht halten.',
+      cueAbove: 'Hinteres Knie näher unter die Hüfte bringen, Becken nach vorn sinken lassen.',
+      why: 'Das hintere Knie liegt am Boden, der Oberschenkel streckt sich nach unten, während das Becken nach vorn sinkt.', weight: 2,
+    },
+    {
+      id: 'anjaneyasana.trunk_upright', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      range: [0, 12], margin: 10, label: 'Rumpf',
+      cueBelow: 'Rumpf aufrecht halten.',
+      cueAbove: 'Rumpf aufrichten: Brustbein heben, nicht zum vorderen Bein lehnen.',
+      why: 'Der Rumpf steigt lang aus dem Becken auf, die Hüftbeuger des hinteren Beins dehnen sich.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana.arms_overhead', view: 'side', measure: angle('mid_hip', 'mid_shoulder', 'mid_wrist'),
+      range: [150, 180], label: 'Arme über Kopf',
+      cueBelow: 'Arme weiter nach oben strecken, neben den Ohren, in Verlängerung des Rumpfes.',
+      cueAbove: 'Arme nicht zu weit nach hinten ziehen: Rippen weich, Arme in Linie mit dem Rumpf.',
+      why: 'Die Arme verlängern die Wirbelsäule nach oben; der Brustkorb öffnet sich ohne Hohlkreuz.', weight: 2,
+    },
+    {
+      id: 'anjaneyasana.front_knee_tracking', view: 'front', measure: offset('lead_knee', 'lead_ankle', 'x', undefined, true),
+      range: [0, 0.12], label: 'Knie über Fuß (seitlich)',
+      cueBelow: 'Knie über die Mitte des Fußes halten.',
+      cueAbove: 'Vorderes Knie über den zweiten Zeh ausrichten, nicht nach innen oder außen sinken lassen.',
+      why: 'Das Knie bleibt in Richtung der Zehen, damit das Gelenk nicht verdreht wird.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
+      range: [0, 8], label: 'Becken',
+      cueBelow: 'Becken waagrecht halten.',
+      cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch und nach vorn gerichtet.',
+      why: 'Das Becken blickt gerade nach vorn und sinkt gleichmäßig ab.', weight: 2,
+    },
+    {
+      id: 'anjaneyasana.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      range: [0, 6], label: 'Rumpf seitlich',
+      cueBelow: 'Rumpf mittig halten.',
+      cueAbove: 'Rumpf mittig über das Becken ziehen: nicht zur Seite kippen.',
+      why: 'Der Rumpf steigt mittig aus dem Becken.', weight: 2,
+    },
+  ],
+
+  // --------------------------------------------------- Virabhadrasana III (lead = STANDBEIN, trail = angehobenes Bein)
+  virabhadrasana_3: [
+    {
+      id: 'virabhadrasana_3.standing_leg_straight', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
+      range: [165, 180], label: 'Standbein',
+      cueBelow: 'Standbein strecken: Oberschenkel anspannen, Kniescheibe hochziehen.',
+      cueAbove: 'Standknie nicht überstrecken: Kniescheibe hoch, Oberschenkel leicht zurück.',
+      why: 'Das Standbein ist fest und gestreckt – es trägt Rumpf, Arme und das angehobene Bein.', weight: 3,
+    },
+    {
+      id: 'virabhadrasana_3.standing_leg_vertical', view: 'side', measure: tilt('lead_hip', 'lead_ankle', 'vertical'),
+      range: [0, 12], label: 'Standbein senkrecht',
+      cueBelow: 'Standbein senkrecht halten.',
+      cueAbove: 'Standbein senkrecht aufrichten: Hüfte über den Standfuß, nicht vor oder hinter den Fuß driften.',
+      why: 'Ein senkrechtes Standbein ist die Achse, um die sich Rumpf und angehobenes Bein ausbalancieren.', weight: 3,
+    },
+    {
+      id: 'virabhadrasana_3.lifted_leg_straight', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
+      range: [165, 180], label: 'Angehobenes Bein',
+      cueBelow: 'Angehobenes Knie strecken: Oberschenkel aktiv, Ferse nach hinten drücken.',
+      cueAbove: 'Angehobenes Knie nicht überstrecken.',
+      why: 'Das angehobene Bein bleibt aktiv und lang bis in die Ferse, es ist kein bloßes Gewicht.', weight: 2,
+    },
+    {
+      id: 'virabhadrasana_3.lifted_leg_horizontal', view: 'side', measure: tilt('trail_hip', 'trail_ankle', 'horizontal'),
+      range: [0, 15], label: 'Angehobenes Bein waagrecht',
+      cueBelow: 'Angehobenes Bein waagrecht halten.',
+      cueAbove: 'Angehobenes Bein höher heben, bis es parallel zum Boden ist.',
+      why: 'Das waagrechte Bein bildet mit dem Standbein einen rechten Winkel und gibt der Haltung ihre Form.', weight: 3,
+    },
+    {
+      id: 'virabhadrasana_3.trunk_horizontal', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),
+      range: [0, 15], margin: 10, label: 'Rumpf waagrecht',
+      cueBelow: 'Rumpf waagrecht halten.',
+      cueAbove: 'Rumpf weiter nach vorn senken, bis er parallel zum Boden ist; Brustbein nach vorn ziehen.',
+      why: 'Rumpf und angehobenes Bein bilden eine waagrechte Linie über dem Standbein.', weight: 3,
+    },
+    {
+      id: 'virabhadrasana_3.arms_in_line', view: 'side', measure: angle('mid_hip', 'mid_shoulder', 'mid_wrist'),
+      range: [155, 180], margin: 10, label: 'Arme in Linie',
+      cueBelow: 'Arme neben den Ohren in Verlängerung des Rumpfes nach vorn strecken.',
+      cueAbove: 'Arme in Linie mit dem Rumpf halten.',
+      why: 'Arme, Rumpf und angehobenes Bein bilden eine einzige lange Linie, die in entgegengesetzte Richtungen zieht.', weight: 2,
+    },
+    {
+      id: 'virabhadrasana_3.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
+      range: [0, 8], label: 'Becken',
+      cueBelow: 'Becken waagrecht halten.',
+      cueAbove: 'Becken ausgleichen: die Hüfte des angehobenen Beins nach unten drehen, beide Hüftknochen gleich hoch.',
+      why: 'Ein waagrechtes Becken zeigt, dass das angehobene Bein aus der Hüfte nach hinten streckt und nicht nach außen kippt.', weight: 3,
+    },
+    {
+      id: 'virabhadrasana_3.standing_knee_tracking', view: 'front', measure: offset('lead_knee', 'lead_ankle', 'x', undefined, true),
+      range: [0, 0.12], label: 'Standknie',
+      cueBelow: 'Knie über die Mitte des Fußes halten.',
+      cueAbove: 'Standknie über den zweiten Zeh ausrichten, Kniescheibe hoch.',
+      why: 'Das Standknie folgt der Fußrichtung und wird nicht verdreht.', weight: 2,
+    },
+  ],
+
+  // --------------------------------------------------- Janu Sirsasana (lead = GESTRECKTES Bein, trail = gebeugtes Bein)
+  janu_sirsasana: [
+    {
+      id: 'janu_sirsasana.straight_leg', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
+      range: [165, 180], label: 'Gestrecktes Bein',
+      cueBelow: 'Gestrecktes Knie strecken: Oberschenkel in den Boden drücken, Ferse vorschieben.',
+      cueAbove: 'Knie nicht überstrecken: Kniescheibe hoch.',
+      why: 'Das gestreckte Bein ist fest und aktiv, über ihm streckt sich der Rumpf nach vorn.', weight: 3,
+    },
+    {
+      id: 'janu_sirsasana.straight_leg_on_floor', view: 'side', measure: tilt('lead_hip', 'lead_ankle', 'horizontal'),
+      range: [0, 12], label: 'Bein am Boden',
+      cueBelow: 'Bein am Boden lassen.',
+      cueAbove: 'Gestrecktes Bein auf den Boden drücken, Knie nicht anheben.',
+      why: 'Das gestreckte Bein ruht am Boden und gibt dem Rumpf eine feste Linie für die Vorbeuge.', weight: 2,
+    },
+    {
+      id: 'janu_sirsasana.hip_fold', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'lead_ankle'),
+      range: [0, 60], margin: 20, label: 'Vorbeuge',
+      cueBelow: 'Rumpf lang halten.',
+      cueAbove: 'Aus der Hüfte weiter über das gestreckte Bein nach vorn beugen: Bauch zuerst, Brustbein zum Fuß, nicht den Rücken runden.',
+      why: 'Der Rumpf beugt aus der Hüfte über das gestreckte Bein; Bauch und Brustkorb folgen nacheinander.', weight: 3,
+    },
+    {
+      id: 'janu_sirsasana.bent_knee', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
+      range: [25, 110], margin: 15, label: 'Gebeugtes Knie',
+      cueBelow: 'Ferse des gebeugten Beins näher an die Leiste ziehen.',
+      cueAbove: 'Gebeugtes Knie weiter beugen: Ferse zur Leiste ziehen, Knie zur Seite sinken lassen.',
+      why: 'Die Ferse des gebeugten Beins liegt nahe der Leiste, das Knie öffnet sich zur Seite.', weight: 2,
+    },
+    {
+      id: 'janu_sirsasana.hands_reach_foot', view: 'side', measure: offset('mid_wrist', 'lead_ankle', 'x', undefined, true),
+      range: [0, 0.6], margin: 0.2, label: 'Hände zum Fuß',
+      cueBelow: 'Hände am Fuß halten.',
+      cueAbove: 'Hände weiter zum Fuß strecken (oder Gurt benutzen), Arme lang.',
+      why: 'Die Hände greifen den Fuß des gestreckten Beins und geben Widerstand für die Rumpfstreckung.', weight: 2,
+    },
+    {
+      id: 'janu_sirsasana.neck_long', view: 'side', measure: angle('mid_ear', 'mid_shoulder', 'mid_hip'),
+      range: [135, 180], margin: 15, label: 'Nacken',
+      cueBelow: 'Nacken lang halten, Kopf nicht fallen lassen oder hochreißen.',
+      cueAbove: 'Kopf in Verlängerung der Wirbelsäule.',
+      why: 'Der Nacken bleibt in der Verlängerung der Wirbelsäule.', weight: 1,
+    },
+    {
+      id: 'janu_sirsasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
+      range: [0, 8], label: 'Becken',
+      cueBelow: 'Becken waagrecht halten.',
+      cueAbove: 'Beide Sitzbeine gleichmäßig in den Boden drücken, Becken ausgleichen.',
+      why: 'Beide Sitzbeine bleiben gleich schwer am Boden, auch wenn ein Bein gebeugt ist.', weight: 2,
+    },
+    {
+      id: 'janu_sirsasana.shoulders_level', view: 'front', measure: tilt('left_shoulder', 'right_shoulder', 'horizontal'),
+      range: [0, 8], label: 'Schultern',
+      cueBelow: 'Schultern waagrecht halten.',
+      cueAbove: 'Schultern ausgleichen: beide gleich weit über das gestreckte Bein nach vorn bringen.',
+      why: 'Der Rumpf faltet sich gerade über das gestreckte Bein, ohne zur Seite zu kippen.', weight: 1,
     },
   ],
 };
