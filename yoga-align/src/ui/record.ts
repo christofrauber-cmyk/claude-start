@@ -9,8 +9,8 @@ const VIEW_DE: Record<ViewName, string> = { front: 'Vorne', side: 'Seite' };
 
 function diagram(): SVGElement {
   const svg = `
-<svg viewBox="0 0 320 210" role="img" aria-label="Aufsicht: Matte mit Kamera vorne an der kurzen Kante und Kamera seitlich an der langen Kante" xmlns="http://www.w3.org/2000/svg">
-  <rect x="1" y="1" width="318" height="208" rx="10" fill="var(--bg-soft)"/>
+<svg viewBox="0 0 320 222" role="img" aria-label="Aufsicht: Matte mit Kamera vorne an der kurzen Kante und Kamera seitlich an der langen Kante" xmlns="http://www.w3.org/2000/svg">
+  <rect x="1" y="1" width="318" height="220" rx="10" fill="var(--bg-soft)"/>
   <!-- mat, front edge at the bottom -->
   <rect x="120" y="14" width="64" height="150" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
   <text x="152" y="30" text-anchor="middle" font-size="10" fill="var(--text-2)">Matte</text>
@@ -20,11 +20,11 @@ function diagram(): SVGElement {
   <circle cx="152" cy="92" r="8" fill="var(--text)"/>
   <ellipse cx="152" cy="112" rx="14" ry="9" fill="var(--text)"/>
   <!-- front camera -->
-  <g transform="translate(152 190)">
+  <g transform="translate(152 186)">
     <rect x="-14" y="-9" width="28" height="18" rx="4" fill="var(--accent)"/><circle r="5" fill="#fff"/>
   </g>
   <path d="M152 178 L152 126" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 4"/>
-  <text x="152" y="206" text-anchor="middle" font-size="11" font-weight="600" fill="var(--text)">Vorne</text>
+  <text x="152" y="215" text-anchor="middle" font-size="11" font-weight="600" fill="var(--text)">Vorne</text>
   <!-- side camera -->
   <g transform="translate(262 92)">
     <rect x="-14" y="-9" width="28" height="18" rx="4" fill="var(--accent)"/><circle r="5" fill="#fff"/>

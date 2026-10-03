@@ -1,6 +1,6 @@
 import { h } from './dom';
 import { go, loadCustomSequences, rerender, saveCustomSequences, state } from './state';
-import { SCHOOLS } from '../data/schools';
+import { DEFAULT_SCHOOL_ID, SCHOOLS } from '../data/schools';
 import { POSES, POSE_BY_ID } from '../data/poses';
 import { BUILT_IN_SEQUENCES } from '../data/sequences';
 import type { Sequence, SequenceStep, Side } from '../core/types';
@@ -21,7 +21,7 @@ export function stepLabel(s: SequenceStep): string {
 
 export function renderStart(): HTMLElement {
   custom ??= loadCustomSequences();
-  if (!state.schoolId) state.schoolId = SCHOOLS[0]?.id ?? '';
+  if (!state.schoolId) state.schoolId = SCHOOLS.some((s) => s.id === DEFAULT_SCHOOL_ID) ? DEFAULT_SCHOOL_ID : (SCHOOLS[0]?.id ?? '');
   const school = SCHOOLS.find((s) => s.id === state.schoolId) ?? SCHOOLS[0];
   const seq = currentSequence();
 
