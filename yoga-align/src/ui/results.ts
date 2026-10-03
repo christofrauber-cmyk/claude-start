@@ -134,7 +134,7 @@ function overview(present: ViewName[]): HTMLElement {
     const badges = present.map((v) => {
       const e = evalStep(v, i);
       const hasRules = e.rules.length > 0;
-      if (e.excluded) return h('span', { class: 'badge none' }, VIEW_DE[v], ' nicht in diesem Video');
+      if (e.excluded) return h('span', { class: 'badge none' }, VIEW_DE[v], ' –');
       if (!e.frame) return h('span', { class: 'badge none' }, VIEW_DE[v], ' nicht gefunden');
       return hasRules ? badge(scoreOf(e), VIEW_DE[v]) : h('span', { class: 'badge none' }, VIEW_DE[v], ' ohne Regeln');
     });
