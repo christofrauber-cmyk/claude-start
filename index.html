@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Christof Rauber</title>
+<meta name="description" content="Christof Rauber – yoga teacher and author based in Zurich.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
+<style>
+  /* ---------- Colours: lake, stone and morning mist ---------- */
+  :root {
+    --bg: #F2F4F1;
+    --surface: #E6EBE7;
+    --ink: #1D2927;
+    --muted: #5B6966;
+    --line: #CBD4CF;
+    --accent: #3C6B66;
+    --accent-soft: #A9C3BD;
+    --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --sans: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151C1B; --surface: #1D2725; --ink: #E4EAE7; --muted: #9AA8A4;
+      --line: #2E3B38; --accent: #8DBDB5; --accent-soft: #3D5A56;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151C1B; --surface: #1D2725; --ink: #E4EAE7; --muted: #9AA8A4;
+    --line: #2E3B38; --accent: #8DBDB5; --accent-soft: #3D5A56;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1.0625rem/1.7 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding-inline: clamp(16px, 5vw, 40px); }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; padding-block: 14px; }
+  .brand { font: 400 1.25rem/1 var(--serif); color: var(--ink); text-decoration: none; }
+  nav { display: flex; gap: 6px 22px; flex-wrap: wrap; }
+  nav a { color: var(--muted); text-decoration: none; font-size: .9rem; font-weight: 500; }
+  nav a:hover { color: var(--ink); }
+
+  /* ---------- Hero ---------- */
+  .hero { display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; gap: 48px; padding-block: clamp(56px, 10vw, 120px); }
+  .eyebrow { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px; }
+  h1 {
+    font: 300 clamp(2.6rem, 7vw, 4.6rem)/1.02 var(--serif);
+    letter-spacing: -.02em; margin: 0 0 24px; text-wrap: balance;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede { font-size: 1.15rem; color: var(--muted); max-width: 34ch; margin: 0 0 32px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-block; padding: 12px 22px; border-radius: 999px;
+    font-weight: 500; font-size: .95rem; text-decoration: none;
+    border: 1px solid var(--accent); transition: background .2s, color .2s;
+  }
+  .btn.primary { background: var(--accent); color: var(--bg); }
+  .btn.primary:hover { background: transparent; color: var(--accent); }
+  .btn.ghost { color: var(--accent); }
+  .btn.ghost:hover { background: var(--accent); color: var(--bg); }
+
+  /* Breathing circle: 4 seconds in, 6 seconds out */
+  .breath { display: grid; place-items: center; gap: 18px; }
+  .circle {
+    width: min(300px, 70vw); aspect-ratio: 1; max-width: 100%; border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%, var(--accent-soft), transparent 70%);
+    border: 1px solid var(--accent-soft);
+    display: grid; place-items: center;
+  }
+  .core {
+    width: 46%; aspect-ratio: 1; border-radius: 50%;
+    background: var(--accent); opacity: .85;
+    animation: breathe 10s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%   { transform: scale(.72); }
+    40%  { transform: scale(1.35); }
+    100% { transform: scale(.72); }
+  }
+  .breath-label { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) {
+    .core { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- Sections ---------- */
+  section.block { border-top: 1px solid var(--line); padding-block: clamp(56px, 8vw, 96px); scroll-margin-top: 64px; }
+  .grid { display: grid; grid-template-columns: 220px 1fr; gap: 24px 56px; }
+  .label { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 8px 0 0; }
+  h2 { font: 300 clamp(1.9rem, 4vw, 2.6rem)/1.15 var(--serif); margin: 0 0 20px; letter-spacing: -.01em; text-wrap: balance; }
+  h3 { font: 500 1.05rem/1.4 var(--sans); margin: 0 0 6px; }
+  p { margin: 0 0 16px; max-width: 62ch; }
+  .muted { color: var(--muted); }
+
+  .offers { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 0; }
+  .offers li { display: grid; grid-template-columns: 1fr auto; gap: 4px 24px; padding-block: 20px; border-top: 1px solid var(--line); }
+  .offers li:last-child { border-bottom: 1px solid var(--line); }
+  .offers p { margin: 0; color: var(--muted); grid-column: 1 / -1; }
+  .offers .meta { font-size: .85rem; color: var(--accent); font-weight: 500; white-space: nowrap; }
+
+  /* Book */
+  .book { display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
+  .cover {
+    aspect-ratio: 2 / 3; max-width: 100%; border-radius: 3px 8px 8px 3px;
+    background: var(--accent); color: var(--bg);
+    padding: 22px 18px; display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: 0 18px 40px -18px rgba(20, 40, 38, .55), inset 6px 0 0 rgba(0, 0, 0, .12);
+  }
+  .cover .t { font: 400 1.45rem/1.15 var(--serif); }
+  .cover .a { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; opacity: .85; }
+  .quote { font: italic 300 1.3rem/1.5 var(--serif); color: var(--ink); border-left: 2px solid var(--accent-soft); padding-left: 20px; margin: 24px 0; max-width: 52ch; }
+
+  /* Instagram */
+  .insta {
+    display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    background: var(--surface); border-radius: 14px; padding: 28px clamp(20px, 4vw, 36px);
+  }
+  .handle { font: 300 clamp(1.5rem, 4vw, 2rem)/1.2 var(--serif); margin: 0; }
+  .handle span { color: var(--accent); }
+
+  /* Contact */
+  .contact-list { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 14px; }
+  .contact-list li { display: grid; grid-template-columns: 110px 1fr; gap: 16px; align-items: baseline; }
+  .contact-list .k { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .contact-list a, .contact-list .v { font-size: 1.1rem; overflow-wrap: anywhere; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px; font-size: .85rem; color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+  /* ---------- Phone ---------- */
+  @media (max-width: 760px) {
+    header { position: static; }
+    .hero { grid-template-columns: 1fr; gap: 40px; }
+    .breath { order: -1; justify-items: start; }
+    .circle { width: 160px; }
+    .grid, .book { grid-template-columns: 1fr; }
+    .cover { width: 170px; }
+    .contact-list li { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top">Christof Rauber</a>
+    <nav aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#teaching">Teaching</a>
+      <a href="#book">Book</a>
+      <a href="#instagram">Instagram</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Home -->
+  <div class="wrap hero">
+    <div>
+      <p class="eyebrow">Yoga teacher &amp; author · Zurich</p>
+      <h1>Slow down.<br><em>Breathe.</em> Begin again.</h1>
+      <p class="lede">Yoga classes, mindfulness and writing about what happens on the mat and off it.</p>
+      <div class="actions">
+        <a class="btn primary" href="#teaching">Practise with me</a>
+        <a class="btn ghost" href="#book">About the book</a>
+      </div>
+    </div>
+    <div class="breath" aria-hidden="true">
+      <div class="circle"><div class="core"></div></div>
+      <span class="breath-label">In for 4 · out for 6</span>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section class="block" id="about">
+    <div class="wrap grid">
+      <p class="label">About</p>
+      <div>
+        <h2>Hi, I'm Christof.</h2>
+        <p>I teach yoga and write in Zurich. My classes are calm, clear and without fuss. You don't need to be flexible, and you don't need to be spiritual. You only need to show up and pay attention.</p>
+        <p class="muted">I bring together the physical practice, mindfulness and what modern psychology knows about the mind. Sometimes that means going against the current. I think that's healthy.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teaching -->
+  <section class="block" id="teaching">
+    <div class="wrap grid">
+      <p class="label">Yoga teaching</p>
+      <div>
+        <h2>Classes for real bodies and busy minds.</h2>
+        <p>Every session combines movement, breath and a few minutes of stillness. Beginners are welcome, and experienced students will find enough depth.</p>
+        <ul class="offers">
+          <li>
+            <h3>Group classes</h3><span class="meta">Zurich</span>
+            <p>Regular weekly classes. Steady flow, clear alignment cues, a quiet ending.</p>
+          </li>
+          <li>
+            <h3>Private sessions</h3><span class="meta">1:1</span>
+            <p>A practice built around you: your body, your goals, your schedule.</p>
+          </li>
+          <li>
+            <h3>Workshops &amp; retreats</h3><span class="meta">On request</span>
+            <p>Longer formats on breath, meditation and mindfulness in daily life. Also for companies and teams.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Book -->
+  <section class="block" id="book">
+    <div class="wrap grid">
+      <p class="label">The book</p>
+      <div class="book">
+        <!-- EDIT: replace the cover text below with the real title, or swap the whole div for <img src="cover.jpg" alt="Book cover"> -->
+        <div class="cover" role="img" aria-label="Book cover">
+          <span class="t">Book title</span>
+          <span class="a">Christof Rauber</span>
+        </div>
+        <div>
+          <h2>Yoga beyond the mat.</h2>
+          <p>My book is about the mind: how we build our own cages, and how practice helps us step out of them. It connects yoga and Buddhist psychology with Western science, using everyday scenes like washing the dishes instead of lofty theory.</p>
+          <!-- EDIT: swap in a real line from the book -->
+          <p class="quote">Mindfulness is not something you add to your life. It is how you live the life you already have.</p>
+          <div class="actions">
+            <!-- EDIT: put the real shop link in href -->
+            <a class="btn primary" href="#contact">Get the book</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instagram -->
+  <section class="block" id="instagram">
+    <div class="wrap grid">
+      <p class="label">Instagram</p>
+      <div>
+        <h2>Follow along.</h2>
+        <p>Class updates, short practices and thoughts from the book.</p>
+        <div class="insta">
+          <p class="handle"><span>@</span>christofsspace</p>
+          <a class="btn primary" href="https://www.instagram.com/christofsspace/" target="_blank" rel="noopener">Open on Instagram</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="block" id="contact">
+    <div class="wrap grid">
+      <p class="label">Contact</p>
+      <div>
+        <h2>Let's talk.</h2>
+        <p>Questions about classes, private sessions, workshops or the book? Send me a message.</p>
+        <ul class="contact-list">
+          <!-- EDIT: replace with the email address you want to show publicly -->
+          <li><span class="k">Email</span><a href="mailto:hello@example.com">hello@example.com</a></li>
+          <li><span class="k">Instagram</span><a href="https://www.instagram.com/christofsspace/" target="_blank" rel="noopener">@christofsspace</a></li>
+          <li><span class="k">Location</span><span class="v">Zurich, Switzerland</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year">2026</span> Christof Rauber</span>
+    <span>Zurich · 47.37° N, 8.54° E</span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
