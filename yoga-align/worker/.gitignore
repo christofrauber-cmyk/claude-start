@@ -1,0 +1,4 @@
+node_modules/
+eval/stills/
+.wrangler/
+.dev.vars

@@ -105,7 +105,10 @@ export function renderResults(): HTMLElement {
 
   const head = h('div', { class: 'row between' },
     h('h1', {}, 'Ergebnis'),
-    h('button', { class: 'link', type: 'button', onclick: newAnalysis }, 'Neue Analyse'),
+    h('div', { class: 'row' },
+      state.review ? h('button', { class: 'link', type: 'button', onclick: () => go('review') }, 'Haltungen ändern') : null,
+      h('button', { class: 'link', type: 'button', onclick: newAnalysis }, 'Neue Analyse'),
+    ),
   );
 
   if (i === null) return h('div', { class: 'stack' }, head, controls, overview(present));
@@ -122,6 +125,8 @@ function newAnalysis() {
   state.included = {};
   state.views = {};
   state.stepIndex = null;
+  state.review = null;
+  state.reviewView = null;
   go('start');
 }
 

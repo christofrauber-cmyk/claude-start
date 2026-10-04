@@ -12,6 +12,12 @@ Live: `https://christofrauber-cmyk.github.io/claude-start/yoga/` (published by `
 5. **Rules**: each rule measures an angle, tilt or offset in the image plane of ONE camera (`src/core/engine.ts`). Cameras are relative to the mat: `front` = short edge, `side` = long edge.
 6. **Overlay**: measured skeleton, the target position (dashed) and correction arrows (`src/ui/overlay.ts`).
 
+## Auto mode (no sequence)
+"Automatisch erkennen" needs no sequence: after pose extraction every hold gets a still image and a preselected pose, which the user confirms or changes with one tap (`src/ui/review.ts`).
+- With the user's one-time consent (start screen / Einstellungen) the still goes to our Worker and a Claude vision model (`worker/`, `src/ui/ai.ts`). Only offered when the app is built with `VITE_CLASSIFY_URL`.
+- Without consent, or if the server is unreachable, the app ranks all poses locally by shape and rules (`suggestPoses`, `src/core/match.ts`) and marks every hold "bitte prüfen".
+- Neighbouring holds with the same pose and ≤ 3 s gap are joined (holds are often split by a small wobble).
+
 ## Editing the rules
 `src/data/schools/iyengar.ts` holds all Iyengar rules (draft, to be reviewed). Each rule has a view, a measure, a target range, German cues for "too little" / "too much", and a short "why". The header comment lists what a 2D camera cannot measure. A new school is a new file in `src/data/schools/` added to `index.ts`.
 

@@ -1,7 +1,10 @@
-import type { Sequence } from '../core/types';
+import type { Sequence, Side } from '../core/types';
 import type { Hold, TimedFrame } from '../core/segmentation';
 
-export type Screen = 'start' | 'record' | 'analyze' | 'results';
+export type Screen = 'start' | 'record' | 'analyze' | 'review' | 'results';
+
+/** Sequence id for "no sequence, recognise the poses". */
+export const AUTO_ID = 'auto';
 export type ViewName = 'front' | 'side';
 
 /** Analysis result of one uploaded video. */
@@ -21,6 +24,26 @@ export interface ViewData {
   matFront: 'left' | 'right';
   /** Manually chosen moment per step (seconds), if any. */
   overrides: (number | null)[];
+  /** Auto mode, main video: holds were confirmed by the user, do not re-assign them. */
+  fixed?: boolean;
+}
+
+/** Auto mode: one hold of the main video, waiting for the user's confirmation. */
+export interface ReviewItem {
+  /** Index into the main view's allHolds. */
+  hold: number;
+  /** Middle of the hold (seconds). */
+  t: number;
+  /** Still image shown to the user (data URL). */
+  image: string;
+  /** Chosen pose id, or null = not a pose / skip. */
+  poseId: string | null;
+  side?: Side;
+  /** Shortlist to tap on, best first. */
+  options: string[];
+  /** Where the preselection came from, and whether the user should look at it. */
+  source: 'ai' | 'local';
+  unsure: boolean;
 }
 
 export interface AppState {
@@ -38,6 +61,11 @@ export interface AppState {
   error: string | null;
   /** Sequence used for the current analysis (frozen at analysis start). */
   analyzed: Sequence | null;
+  /** Auto mode: holds to confirm, and the video they come from. */
+  review: ReviewItem[] | null;
+  reviewView: ViewName | null;
+  /** Auto mode: the AI could not be reached, local suggestions were used. */
+  aiFailed: boolean;
 }
 
 export const state: AppState = {
@@ -52,6 +80,9 @@ export const state: AppState = {
   overlay: true,
   error: null,
   analyzed: null,
+  review: null,
+  reviewView: null,
+  aiFailed: false,
 };
 
 let renderFn: () => void = () => {};

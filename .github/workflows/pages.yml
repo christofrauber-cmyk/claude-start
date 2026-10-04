@@ -27,6 +27,9 @@ jobs:
           cache-dependency-path: yoga-align/package-lock.json
       - name: Build yoga app
         working-directory: yoga-align
+        env:
+          # Address of the pose classifier Worker; empty = no AI offered.
+          VITE_CLASSIFY_URL: ${{ vars.VITE_CLASSIFY_URL }}
         run: |
           npm ci
           npm test

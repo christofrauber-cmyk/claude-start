@@ -22,6 +22,7 @@ export function holdMedian(hold: Hold): PoseFrame {
  * the current school. Manually chosen moments (vd.overrides) are untouched.
  */
 export function realign(vd: ViewData, view: ViewName, steps: SequenceStep[]): void {
+  if (vd.fixed) return;
   const school = SCHOOLS.find((s) => s.id === state.schoolId) ?? SCHOOLS[0];
   const idx = steps.map((_, i) => i).filter((i) => vd.included[i] !== false);
   const aligned = alignHolds(vd.allHolds, idx.length, (hold, k) => {

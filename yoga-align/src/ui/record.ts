@@ -1,5 +1,6 @@
 import { h, fmt } from './dom';
-import { go, rerender, state, type ViewName } from './state';
+import { AUTO_ID, go, rerender, state, type ViewName } from './state';
+import { aiEnabled } from './ai';
 import { SCHOOLS } from '../data/schools';
 import { POSE_BY_ID } from '../data/poses';
 import { currentSequence, stepLabel } from './start';
@@ -119,12 +120,14 @@ function coverage(): HTMLElement {
 
 export function renderRecord(): HTMLElement {
   const seq = currentSequence();
+  const auto = state.sequenceId === AUTO_ID;
   const ready = !!(state.files.front || state.files.side);
   return h('div', { class: 'stack' },
     h('button', { class: 'link back', type: 'button', onclick: () => go('start') }, '← Zurück'),
     h('section', { class: 'stack-s' },
       h('h1', {}, 'Aufnahme'),
       seq ? h('p', { class: 'muted' }, `Ablauf: ${seq.name} (${seq.steps.length} Schritte)`) : null,
+      auto ? h('p', { class: 'muted' }, 'Ohne festen Ablauf: Die Haltungen werden nach der Analyse erkannt, du bestätigst sie kurz.') : null,
       h('p', {}, 'Die Ansichten beziehen sich auf deine Matte, nicht auf deinen Körper.'),
       diagram(),
       h('ul', { class: 'bullets' },
@@ -133,7 +136,9 @@ export function renderRecord(): HTMLElement {
         h('li', {}, 'Der ganze Körper (Kopf bis Füße, auch Hände) muss im Bild bleiben.'),
         h('li', {}, 'Handy in Hüfthöhe aufstellen und nicht bewegen; gutes Licht, enganliegende Kleidung hilft.'),
         h('li', {}, 'Jede Haltung etwa 20–30 Sekunden ruhig halten und zwischen den Haltungen kurz zurück in den Stand kommen. So erkennt die App die einzelnen Haltungen.'),
-        h('li', {}, 'Die Haltungen in der Reihenfolge des Ablaufs ausführen. Für beide Ansichten den Ablauf einmal komplett durchgehen.'),
+        auto
+          ? h('li', {}, 'Mit zwei Ansichten: für beide Videos dieselben Haltungen in derselben Reihenfolge üben.')
+          : h('li', {}, 'Die Haltungen in der Reihenfolge des Ablaufs ausführen. Für beide Ansichten den Ablauf einmal komplett durchgehen.'),
       ),
     ),
     h('section', { class: 'stack-s' },
@@ -142,7 +147,8 @@ export function renderRecord(): HTMLElement {
         slot('front', 'Frontaufnahme (Vorne)', 'Video vom kurzen Mattenende.'),
         slot('side', 'Seitenaufnahme (Seite)', 'Video von der langen Mattenseite.'),
       ),
-      h('p', { class: 'muted' }, 'Mindestens ein Video ist nötig. Das Video wird nur im Browser gelesen und nicht hochgeladen.'),
+      h('p', { class: 'muted' }, 'Mindestens ein Video ist nötig. Das Video wird nur im Browser gelesen und nicht hochgeladen',
+        auto && aiEnabled() ? '; zur Erkennung geht pro Haltung ein Standbild an den KI-Dienst.' : '.'),
     ),
     coverage(),
     h('div', { class: 'actions' },

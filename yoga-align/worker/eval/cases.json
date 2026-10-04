@@ -1,0 +1,26 @@
+{
+  "_comment": "Ground truth for the two test videos in christofrauber-cmyk/yoga-testvideos. t = seconds into the video, in the middle of the hold. accept = ids that count as correct.",
+  "videos": {
+    "front": "Frontansicht Anjaneyasana Warrior 2 Warrior 3 Urdhva Hastasana Utthanasana Ardha Utthanasana Down dog Janu Sirsasana.mov",
+    "side": "Seitenansicht Tadasana Anjaneyasana Warrior 2 Urdhva Hastasana Utthanasana Ardha Utthanasana Down dog Janu Sirsasana.mov"
+  },
+  "cases": [
+    { "view": "front", "t": 4, "accept": ["anjaneyasana", "anjaneyasana_high"] },
+    { "view": "front", "t": 13, "accept": ["virabhadrasana_2"] },
+    { "view": "front", "t": 25, "accept": ["virabhadrasana_3"] },
+    { "view": "front", "t": 34, "accept": ["tadasana"] },
+    { "view": "front", "t": 39, "accept": ["urdhva_hastasana"] },
+    { "view": "front", "t": 46, "accept": ["uttanasana"] },
+    { "view": "front", "t": 51, "accept": ["ardha_uttanasana"] },
+    { "view": "front", "t": 63, "accept": ["adho_mukha_svanasana"] },
+    { "view": "front", "t": 79, "accept": ["janu_sirsasana"] },
+    { "view": "side", "t": 4, "accept": ["tadasana"] },
+    { "view": "side", "t": 18, "accept": ["anjaneyasana", "anjaneyasana_high"] },
+    { "view": "side", "t": 30, "accept": ["virabhadrasana_2"] },
+    { "view": "side", "t": 45, "accept": ["urdhva_hastasana"] },
+    { "view": "side", "t": 52, "accept": ["uttanasana"] },
+    { "view": "side", "t": 57, "accept": ["ardha_uttanasana"] },
+    { "view": "side", "t": 69, "accept": ["adho_mukha_svanasana"] },
+    { "view": "side", "t": 87, "accept": ["janu_sirsasana"] }
+  ]
+}

@@ -130,3 +130,18 @@ textarea.paste {
   background: #fff;
   resize: vertical;
 }
+
+/* auto mode: review of recognised poses */
+.tag.ok { background: var(--accent-soft); color: var(--accent); margin-left: 0; }
+.review { display: flex; gap: 12px; align-items: flex-start; }
+.review.unsure { border-color: var(--minor); }
+.review.skipped { opacity: .6; }
+.still { width: 96px; max-height: 170px; object-fit: cover; border-radius: 8px; background: var(--bg-soft); flex: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 14px; min-height: 36px; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--card); color: var(--text); cursor: pointer; }
+.chip.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.chip:focus-visible { outline: 3px solid #9bc9bf; outline-offset: 2px; }
+.consent { border-color: var(--accent); }
+.settings summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+.settings .check { margin-top: 8px; }
+@media (max-width: 420px) { .still { width: 72px; } }

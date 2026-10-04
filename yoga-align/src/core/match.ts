@@ -24,3 +24,17 @@ export function poseFit(frame: PoseFrame, pose: PoseDef, rules: Rule[], view: Vi
   const score = poseScore(evaluatePose(frame, rules, view, { ...ctx, side }));
   return 0.75 * shape + 0.25 * (score === null ? 0.5 : score / 100);
 }
+
+export interface PoseSuggestion { poseId: string; fit: number }
+
+/**
+ * Local guess (no network) which poses a hold could show, best first.
+ * Many poses share a similar silhouette, so this is a shortlist for the
+ * user to pick from, not an answer.
+ */
+export function suggestPoses(frame: PoseFrame, poses: PoseDef[], rulesFor: (poseId: string) => Rule[], view: View, ctx: FrameContext, n = 4): PoseSuggestion[] {
+  return poses
+    .map((p) => ({ poseId: p.id, fit: poseFit(frame, p, rulesFor(p.id), view, { ...ctx, side: undefined }) }))
+    .sort((a, b) => b.fit - a.fit)
+    .slice(0, n);
+}
