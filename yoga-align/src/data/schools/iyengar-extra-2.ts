@@ -23,6 +23,13 @@ import type { Measure, Rule } from '../../core/types';
  * Kamerahinweise: Fast alle Regeln sind Seitenansicht ('side'): Beinstreckung, Rumpflinie und Bodenkontakt liegen in der
  * Sagittalebene. 'front' wird nur für die Beckenhöhe im Sitz verwendet (beide Sitzbeine gleich schwer).
  *
+ * NACH DER PRÜFUNG GESTRICHEN (Falschalarm-Risiko, doppelte Aussage oder Sicherheit):
+ *   Zweitregeln zum Bein am Boden (Triang Mukhaikapada, Marichyasana I/III: das gestreckte Knie zeigt die Abweichung schon),
+ *   Hand-zum-Fuß (Flexibilitätstest), Rumpf-tief-Dopplung (Kurmasana), verdecktes gefaltetes Knie (Krounchasana, Balasana),
+ *   Kopf heben (Bitilasana: Nackenüberstreckung), Hände an den Fersen (Ustrasana: Hände an Hüfte/Kreuz/Blöcken sind gültig),
+ *   Hände zu den Füßen (Kapotasana: kein automatischer Cue tiefer in die Rückbeuge; die Tiefenregel bremst nur),
+ *   Standbein Camatkarasana, Beine in Makarasana (Ruhehaltung), angehobenes Knie Ardha Matsyendrasana.
+ *
  * BEWUSST NICHT KODIERT (mit 33 Punkten aus einer 2D-Kamera nicht messbar) – Input für die fachliche Prüfung:
  *
  * Kurmasana: Arme unter den Oberschenkeln und Schulter-Bodenkontakt (Verdeckung); Fersen zusammen, Fußstellung;
@@ -101,21 +108,14 @@ const rules: Record<string, Rule[]> = {
       range: [150, 180], margin: 12, label: 'Beine',
       cueBelow: 'Beine strecken: Fersen vorschieben, Oberschenkel in die Arme drücken.',
       cueAbove: 'Knie nicht überstrecken, Kniescheiben hoch.',
-      why: 'Die gestreckten Beine ruhen auf den Oberarmen; Hüfte und Rumpf sinken dazwischen ab.', weight: 2,
+      why: 'Die gestreckten Beine ruhen auf den Oberarmen; Hüfte und Rumpf sinken dazwischen ab.', weight: 1,
     },
     {
       id: 'kurmasana.hip_fold', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'mid_knee'),
       range: [0, 60], margin: 20, label: 'Vorbeuge',
       cueBelow: 'Rumpf lang halten.',
       cueAbove: 'Aus der Hüfte tiefer nach vorn beugen: Brustbein nach vorn zwischen die Beine schieben.',
-      why: 'Der Rumpf faltet sich aus den Hüftgelenken zwischen den Beinen nach vorn.', weight: 3,
-    },
-    {
-      id: 'kurmasana.trunk_low', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),
-      range: [0, 35], margin: 15, label: 'Rumpf tief',
-      cueBelow: 'Rumpf tief halten.',
-      cueAbove: 'Brust zum Boden senken: Schultern unter den Beinen nach vorn schieben.',
-      why: 'In der Schildkröte liegt der Rumpf fast waagrecht, die Brust nähert sich dem Boden.', weight: 2,
+      why: 'Der Rumpf faltet sich aus den Hüftgelenken zwischen den Beinen nach vorn.', weight: 2,
     },
   ],
 
@@ -129,15 +129,8 @@ const rules: Record<string, Rule[]> = {
       why: 'Das gestreckte Bein ist fest und aktiv, über ihm streckt sich der Rumpf nach vorn.', weight: 3,
     },
     {
-      id: 'triang_mukhaikapada_paschimottanasana.straight_leg_on_floor', view: 'side', measure: tilt('lead_hip', 'lead_ankle', 'horizontal'),
-      range: [0, 12], label: 'Bein am Boden',
-      cueBelow: 'Bein am Boden lassen.',
-      cueAbove: 'Gestrecktes Bein auf den Boden drücken, Knie nicht anheben.',
-      why: 'Das gestreckte Bein ruht am Boden und gibt dem Rumpf eine feste Linie für die Vorbeuge.', weight: 2,
-    },
-    {
       id: 'triang_mukhaikapada_paschimottanasana.hip_fold', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'lead_ankle'),
-      range: [0, 60], margin: 20, label: 'Vorbeuge',
+      range: [0, 80], margin: 20, label: 'Vorbeuge',
       cueBelow: 'Rumpf lang halten.',
       cueAbove: 'Aus der Hüfte weiter über das gestreckte Bein nach vorn beugen: Bauch zuerst, Brustbein zum Fuß, nicht den Rücken runden.',
       why: 'Der Rumpf beugt aus der Hüfte über das gestreckte Bein; Bauch und Brustkorb folgen nacheinander.', weight: 3,
@@ -147,21 +140,14 @@ const rules: Record<string, Rule[]> = {
       range: [10, 60], margin: 15, label: 'Gefaltetes Bein',
       cueBelow: 'Gefaltetes Bein nicht mehr zusammenziehen.',
       cueAbove: 'Unterschenkel des gebeugten Beins nach hinten falten: Ferse neben die Hüfte, Fußrücken auf den Boden.',
-      why: 'Das Knie ist voll gebeugt, der Fuß liegt neben der Hüfte – so bleibt das Becken mittig über dem Boden.', weight: 2,
-    },
-    {
-      id: 'triang_mukhaikapada_paschimottanasana.hands_reach_foot', view: 'side', measure: offset('mid_wrist', 'lead_ankle', 'x', undefined, true),
-      range: [0, 0.6], margin: 0.2, label: 'Hände zum Fuß',
-      cueBelow: 'Hände am Fuß halten.',
-      cueAbove: 'Hände weiter zum Fuß strecken (oder Gurt benutzen), Arme lang.',
-      why: 'Die Hände greifen den Fuß des gestreckten Beins und geben Widerstand für die Rumpfstreckung.', weight: 2,
+      why: 'Das Knie ist voll gebeugt, der Fuß liegt neben der Hüfte – so bleibt das Becken mittig über dem Boden.', weight: 1,
     },
     {
       id: 'triang_mukhaikapada_paschimottanasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Beide Sitzbeine gleichmäßig in den Boden drücken: Gesäß auf der Seite des gefalteten Beins nicht anheben.',
-      why: 'Beide Sitzbeine bleiben gleich schwer am Boden – das ist das Kennzeichen dieser Haltung.', weight: 3,
+      why: 'Beide Sitzbeine bleiben gleich schwer am Boden – das ist das Kennzeichen dieser Haltung.', weight: 2,
     },
   ],
 
@@ -179,7 +165,7 @@ const rules: Record<string, Rule[]> = {
       range: [10, 75], margin: 15, label: 'Bein zum Rumpf',
       cueBelow: 'Bein nicht noch näher zum Gesicht ziehen: Rumpf lang halten.',
       cueAbove: 'Bein weiter zum Rumpf heranziehen, Brustbein dem Bein entgegen.',
-      why: 'Bein und Rumpf kommen einander entgegen, ohne dass der Rücken rund wird.', weight: 3,
+      why: 'Bein und Rumpf kommen einander entgegen, ohne dass der Rücken rund wird.', weight: 2,
     },
     {
       id: 'krounchasana.trunk_upright', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
@@ -188,24 +174,10 @@ const rules: Record<string, Rule[]> = {
       cueAbove: 'Rumpf aufrichten, Brustbein heben, nicht in das Bein hineinsinken.',
       why: 'Die Wirbelsäule bleibt lang und aufrecht, damit das Bein ohne Rundrücken nach oben kommt.', weight: 2,
     },
-    {
-      id: 'krounchasana.folded_knee', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
-      range: [10, 60], margin: 15, label: 'Gefaltetes Bein',
-      cueBelow: 'Gefaltetes Bein nicht weiter zusammenziehen.',
-      cueAbove: 'Unterschenkel des gefalteten Beins nach hinten falten: Ferse neben die Hüfte, Fußrücken am Boden.',
-      why: 'Das gefaltete Bein gibt ein stabiles Fundament, die Sitzbeine bleiben am Boden.', weight: 2,
-    },
   ],
 
   // ---------------------------------------------------------------- Balasana
   balasana: [
-    {
-      id: 'balasana.knees_folded', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
-      range: [0, 50], margin: 15, label: 'Knie gebeugt',
-      cueBelow: 'Knie nicht noch weiter einrollen.',
-      cueAbove: 'Knie tief beugen: Gesäß zu den Fersen sinken lassen (Decke unter das Gesäß, wenn es nicht geht).',
-      why: 'Die vollständig gebeugten Knie lassen das Becken auf den Fersen ruhen und den Rumpf locker über die Oberschenkel sinken.', weight: 3,
-    },
     {
       id: 'balasana.hips_to_heels', view: 'side', measure: offset('mid_hip', 'mid_ankle', 'x', undefined, true),
       range: [0, 0.4], margin: 0.15, label: 'Gesäß zu den Fersen',
@@ -215,10 +187,10 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'balasana.trunk_low', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),
-      range: [0, 35], margin: 15, label: 'Rumpf abgelegt',
+      range: [0, 45], margin: 15, label: 'Rumpf abgelegt',
       cueBelow: 'Rumpf ablegen.',
       cueAbove: 'Rumpf über die Oberschenkel sinken lassen, Stirn zum Boden.',
-      why: 'In der Kindhaltung ruht der Rumpf schwer auf den Oberschenkeln, der Atem fließt in den Rücken.', weight: 2,
+      why: 'In der Kindhaltung ruht der Rumpf schwer auf den Oberschenkeln, der Atem fließt in den Rücken.', weight: 1,
     },
   ],
 
@@ -256,13 +228,6 @@ const rules: Record<string, Rule[]> = {
       why: 'Das gestreckte Bein ist fest und aktiv, über ihm streckt sich der Rumpf nach vorn.', weight: 3,
     },
     {
-      id: 'marichyasana_1.straight_leg_on_floor', view: 'side', measure: tilt('lead_hip', 'lead_ankle', 'horizontal'),
-      range: [0, 12], label: 'Bein am Boden',
-      cueBelow: 'Bein am Boden lassen.',
-      cueAbove: 'Gestrecktes Bein auf den Boden drücken, Knie nicht anheben.',
-      why: 'Das gestreckte Bein ruht am Boden und gibt dem Rumpf eine feste Linie für die Vorbeuge.', weight: 2,
-    },
-    {
       id: 'marichyasana_1.bent_knee', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
       range: [20, 75], margin: 15, label: 'Aufgestelltes Knie',
       cueBelow: 'Ferse etwas vom Gesäß wegschieben, Fuß flach lassen.',
@@ -278,14 +243,14 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'marichyasana_1.hip_fold', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'lead_ankle'),
-      range: [0, 65], margin: 20, label: 'Vorbeuge',
+      range: [0, 80], margin: 20, label: 'Vorbeuge',
       cueBelow: 'Rumpf lang halten.',
       cueAbove: 'Aus der Hüfte weiter über das gestreckte Bein nach vorn beugen: Bauch zuerst, Brustbein zum Fuß, nicht den Rücken runden.',
       why: 'Der Rumpf beugt aus der Hüfte über das gestreckte Bein; Bauch und Brustkorb folgen nacheinander.', weight: 3,
     },
     {
       id: 'marichyasana_1.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Beide Sitzbeine gleichmäßig in den Boden drücken, Becken ausgleichen.',
       why: 'Beide Sitzbeine bleiben gleich schwer am Boden, auch wenn ein Knie aufgestellt ist.', weight: 2,
@@ -338,13 +303,6 @@ const rules: Record<string, Rule[]> = {
       'Ellbogen nicht überstrecken, Oberarmmuskeln aktiv.',
       'Fest in den Boden gedrückte, gestreckte Arme tragen die Brust, die sich nach vorn hebt.',
     ),
-    {
-      id: 'bitilasana.head_lifted', view: 'side', measure: angle('mid_ear', 'mid_shoulder', 'mid_hip'),
-      range: [100, 165], margin: 15, label: 'Kopf angehoben',
-      cueBelow: 'Nacken lang lassen, Kopf nicht in den Nacken fallen lassen.',
-      cueAbove: 'Brustbein nach vorn und oben ziehen, Blick sanft anheben.',
-      why: 'Die Brust hebt sich, der Kopf folgt der Bewegung des Brustbeins und bleibt im Nacken lang.', weight: 1,
-    },
   ],
 
   // ----------------------------------------------------------------- Ustrasana
@@ -362,13 +320,6 @@ const rules: Record<string, Rule[]> = {
       'Ellbogen nicht überstrecken, Arme aktiv.',
       'Die langen, aktiven Arme heben den Brustkorb nach oben und hinten.',
     ),
-    {
-      id: 'ustrasana.hands_on_heels', view: 'side', measure: offset('mid_wrist', 'mid_ankle', 'x', undefined, true),
-      range: [0, 0.3], margin: 0.12, label: 'Hände an den Fersen',
-      cueBelow: 'Hände an den Fersen halten.',
-      cueAbove: 'Hände zu den Fersen führen, Brustbein dabei heben (Zehen aufstellen, wenn nötig).',
-      why: 'Die Hände liegen auf den Fersen; der Brustkorb öffnet sich nach oben und hinten.', weight: 2,
-    },
     {
       id: 'ustrasana.hip_extension', view: 'side', measure: angle('mid_knee', 'mid_hip', 'mid_shoulder'),
       range: [130, 175], margin: 12, label: 'Rückbeuge',
@@ -431,7 +382,7 @@ const rules: Record<string, Rule[]> = {
     {
       id: 'purvottanasana.body_line', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'mid_ankle'),
       range: [160, 180], margin: 10, label: 'Körperlinie',
-      cueBelow: 'Becken höher heben: Schultern, Hüfte und Fersen in eine schräge Linie.',
+      cueBelow: 'Becken höher heben: Schultern, Hüfte und Fersen in eine Linie.',
       cueAbove: 'Becken nicht überstrecken, Gesäß fest, Linie gerade halten.',
       why: 'Der Körper bildet eine lange, gerade schräge Linie von den Schultern bis zu den Füßen.', weight: 3,
     },
@@ -455,17 +406,10 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'kapotasana.deep_backbend', view: 'side', measure: angle('mid_knee', 'mid_hip', 'mid_shoulder'),
-      range: [70, 150], margin: 15, label: 'Tiefe Rückbeuge',
+      range: [70, 175], margin: 15, label: 'Tiefe Rückbeuge',
       cueBelow: 'Nicht tiefer zurück: Brustbein heben, Hüfte vorn halten.',
-      cueAbove: 'Brustbein weiter nach hinten öffnen, Hüfte vorschieben.',
-      why: 'Die Taube verlangt einen tiefen, gleichmäßigen Bogen der ganzen Wirbelsäule.', weight: 2,
-    },
-    {
-      id: 'kapotasana.hands_to_feet', view: 'side', measure: offset('mid_wrist', 'mid_ankle', 'x', undefined, true),
-      range: [0, 0.35], margin: 0.15, label: 'Hände zu den Füßen',
-      cueBelow: 'Hände an den Füßen halten.',
-      cueAbove: 'Hände zu den Füßen führen: erst Brust öffnen, dann Arme nach hinten strecken.',
-      why: 'Die Hände greifen die Füße oder Fersen; so schließt sich der Bogen.', weight: 1,
+      cueAbove: 'Brustbein heben, Hüfte vorn halten: die Rückbeuge langsam und ohne Druck aufbauen.',
+      why: 'Die Rückbeuge verteilt sich auf den ganzen Rücken; die Regel bremst nur zu tiefes Zurückfallen und treibt niemanden tiefer.', weight: 1,
     },
   ],
 
@@ -477,13 +421,6 @@ const rules: Record<string, Rule[]> = {
       cueBelow: 'Stützarm ganz strecken, Hand fest in den Boden.',
       cueAbove: 'Ellbogen des Stützarms nicht überstrecken.',
       why: 'Der gestreckte Stützarm trägt den Körper und lässt die Brust sich nach oben öffnen.', weight: 3,
-    },
-    {
-      id: 'camatkarasana.support_leg_straight', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
-      range: [155, 180], margin: 10, label: 'Standbein',
-      cueBelow: 'Standbein strecken, Fuß fest in den Boden.',
-      cueAbove: 'Knie des Standbeins nicht überstrecken.',
-      why: 'Das gestreckte Standbein stützt das Becken und trägt den Bogen.', weight: 2,
     },
     {
       id: 'camatkarasana.hips_high', view: 'side', measure: offset('mid_hip', 'mid_wrist', 'y', 'up'),
@@ -604,17 +541,10 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'makarasana.legs_on_floor', view: 'side', measure: tilt('mid_hip', 'mid_ankle', 'horizontal'),
-      range: [0, 12], margin: 8, label: 'Beine am Boden',
+      range: [0, 15], margin: 8, label: 'Beine am Boden',
       cueBelow: 'Beine am Boden lassen.',
       cueAbove: 'Beine ganz am Boden ablegen und entspannen.',
-      why: 'Die Beine liegen schwer und entspannt am Boden.', weight: 2,
-    },
-    {
-      id: 'makarasana.legs_straight', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
-      range: [150, 180], margin: 12, label: 'Beine',
-      cueBelow: 'Beine lang ausstrecken.',
-      cueAbove: 'Knie weich lassen, nicht überstrecken.',
-      why: 'Die ausgestreckten Beine lassen die Hüfte lang und das Kreuz weich werden.', weight: 1,
+      why: 'Die Beine liegen schwer und entspannt am Boden.', weight: 1,
     },
   ],
 
@@ -641,13 +571,6 @@ const rules: Record<string, Rule[]> = {
       cueAbove: 'Beide Sitzbeine gleichmäßig in den Boden drücken, Becken ausgleichen (Decke unter das Gesäß, wenn nötig).',
       why: 'Beide Sitzbeine bleiben am Boden, damit die Drehung aus der Wirbelsäule und nicht aus dem Becken kommt.', weight: 2,
     },
-    {
-      id: 'ardha_matsyendrasana.raised_knee', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
-      range: [20, 80], margin: 15, label: 'Aufgestelltes Knie',
-      cueBelow: 'Aufgestelltes Bein nicht noch weiter zusammenfalten.',
-      cueAbove: 'Fuß näher an das Gesäß ziehen, Fußsohle flach neben den Oberschenkel.',
-      why: 'Der aufgestellte Fuß steht fest neben dem Oberschenkel und liefert den Gegendruck für die Drehung.', weight: 1,
-    },
   ],
 
   // ------------------------------- Marichyasana III (lead = AUFGESTELLTES gebeugtes Bein, trail = gestrecktes Bein)
@@ -658,13 +581,6 @@ const rules: Record<string, Rule[]> = {
       cueBelow: 'Gestrecktes Knie strecken: Oberschenkel in den Boden drücken, Ferse vorschieben.',
       cueAbove: 'Knie nicht überstrecken: Kniescheibe hoch.',
       why: 'Das gestreckte Bein bleibt fest am Boden und ist der Gegenpol der Drehung.', weight: 3,
-    },
-    {
-      id: 'marichyasana_3.straight_leg_on_floor', view: 'side', measure: tilt('trail_hip', 'trail_ankle', 'horizontal'),
-      range: [0, 12], label: 'Bein am Boden',
-      cueBelow: 'Bein am Boden lassen.',
-      cueAbove: 'Gestrecktes Bein auf den Boden drücken, Knie nicht anheben.',
-      why: 'Das gestreckte Bein ruht am Boden und gibt der Drehung eine stabile Basis.', weight: 2,
     },
     {
       id: 'marichyasana_3.bent_knee', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
@@ -682,7 +598,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'marichyasana_3.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 10], margin: 6, label: 'Becken',
+      range: [0, 10], margin: 8, label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Beide Sitzbeine gleichmäßig in den Boden drücken, Becken ausgleichen.',
       why: 'Beide Sitzbeine bleiben am Boden, damit die Drehung aus der Wirbelsäule und nicht aus dem Becken kommt.', weight: 2,

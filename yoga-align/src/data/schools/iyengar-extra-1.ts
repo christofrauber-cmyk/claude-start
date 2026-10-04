@@ -9,9 +9,9 @@ import type { Measure, Rule } from '../../core/types';
  * Lead/Trail pro Pose (Seitenwahl passend zum sideCue der Pose; nicht seitige Posen haben kein lead_/trail_):
  *   Parsvottanasana (ohne sideCue): lead = das VORDERE Bein, über das sich der Rumpf beugt ("Parsvottanasana rechts" =
  *     rechtes Bein vorn); trail = hinteres Bein.
- *   Parivrtta Trikonasana (lowerWrist): lead = Seite der UNTEREN Hand. Die untere Hand liegt auf der Gegenseite des
- *     vorderen Fußes, also ist lead das HINTERE Bein und trail das VORDERE Bein; lead_wrist = untere Hand,
- *     trail_wrist = obere Hand.
+ *   Parivrtta Trikonasana (OHNE sideCue, Seite aus dem Schritt): lead = das VORDERE Bein ("Parivrtta Trikonasana rechts" =
+ *     rechtes Bein vorn, wie bei Trikonasana); trail = hinteres Bein. Die untere Hand liegt auf der Gegenseite des vorderen
+ *     Fußes; die Handgelenk-Regel misst symmetrisch und ist von der Seitenwahl unabhängig.
  *   Parivrtta Parsvakonasana (bentKnee): lead = das stärker gebeugte vordere Knie; trail = gestrecktes hinteres Bein.
  *   Skandasana (bentKnee): lead = das gebeugte Bein (Körpergewicht darauf); trail = das gestreckte Bein.
  *   Utthita Hasta Padangusthasana (higherAnkle): lead = das ANGEHOBENE Bein (Hand am Zeh); trail = Standbein.
@@ -24,6 +24,14 @@ import type { Measure, Rule } from '../../core/types';
  *   Parighasana (straightKnee): lead = das gestreckte Bein (zur Seite); trail = das kniende, gebeugte Bein.
  *   Nicht seitig (nur left_/right_/mid_): Prasarita Padottanasana, Malasana, Utkata Konasana, Padangusthasana,
  *     Padahastasana, Upavistha Konasana.
+ *
+ * NACH DER PRÜFUNG GESTRICHEN (Falschalarm-Risiko, doppelte Aussage oder in 2D nicht trennscharf):
+ *   Schulterlinien-Regeln in Vorbeugen (Parsvottanasana, Prasarita, Upavistha Konasana, Garudasana: Arme verschlungen),
+ *   Handgelenk-Winkel Parivrtta Trikonasana (doppelt zur Armlinie, in der Drehung ohne Aussage), Rumpfneigung Parivrtta Parsvakonasana (widerspricht
+ *   der Rückenlinie), Hüftsenkung Malasana (doppelt zum Kniewinkel), Hüfte-über-Knie Parighasana (doppelt zur
+ *   Oberschenkel-Senkrechten), Beinspreizung Upavistha Konasana (Beine zeigen zur Kamera, Winkel immer ~180).
+ *   Weite Grätschen (Prasarita, Skandasana, Utkata Konasana, Parighasana) liegen entlang der Mattenlänge und werden
+ *   von 'side' gemessen, nicht von 'front'.
  *
  * BEWUSST NICHT KODIERT (mit 33 Punkten aus einer 2D-Kamera nicht messbar) – Input für die fachliche Prüfung:
  *
@@ -116,53 +124,39 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
     },
     {
       id: 'parsvottanasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
-      cueBelow: 'Becken waagrecht halten.',
-      cueAbove: 'Becken quadratisch nach vorn stellen: die hintere Hüfte nach vorn, beide Hüftknochen gleich hoch.',
-      why: 'Das Becken bleibt zum vorderen Bein ausgerichtet; so fällt die Beuge nicht in eine Seite.', weight: 3,
-    },
-    {
-      id: 'parsvottanasana.shoulders_level', view: 'front', measure: tilt('left_shoulder', 'right_shoulder', 'horizontal'),
-      range: [0, 10], label: 'Schultern',
-      cueBelow: 'Schultern waagrecht halten.',
-      cueAbove: 'Schultern ausgleichen: beide gleich weit nach vorn strecken, Rumpf nicht verdrehen.',
-      why: 'Gleichmäßig lange Rumpfseiten sind das Zeichen einer sauberen, nicht verdrehten Vorbeuge.', weight: 1,
+      range: [0, 10], label: 'Becken',
+      cueBelow: 'Hüften gleich hoch halten.',
+      cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch, die hintere Hüfte nach vorn.',
+      why: 'Das Becken bleibt zum vorderen Bein ausgerichtet; so fällt die Beuge nicht in eine Seite.', weight: 2,
     },
   ],
 
   // ------------------------------------------------------- Prasarita Padottanasana (nicht seitig)
   prasarita_padottanasana: [
     {
-      id: 'prasarita_padottanasana.left_leg_straight', view: 'front', measure: angle('left_hip', 'left_knee', 'left_ankle'),
+      id: 'prasarita_padottanasana.left_leg_straight', view: 'side', measure: angle('left_hip', 'left_knee', 'left_ankle'),
       range: [165, 180], label: 'Linkes Bein',
       cueBelow: 'Linkes Knie strecken: Kniescheibe hochziehen, Oberschenkel zurück.',
       cueAbove: 'Linkes Knie nicht überstrecken: Kniescheibe hoch.',
       why: 'Feste, gestreckte Beine tragen die Vorbeuge und lassen den Rumpf frei hängen.', weight: 3,
     },
     {
-      id: 'prasarita_padottanasana.right_leg_straight', view: 'front', measure: angle('right_hip', 'right_knee', 'right_ankle'),
+      id: 'prasarita_padottanasana.right_leg_straight', view: 'side', measure: angle('right_hip', 'right_knee', 'right_ankle'),
       range: [165, 180], label: 'Rechtes Bein',
       cueBelow: 'Rechtes Knie strecken: Kniescheibe hochziehen, Oberschenkel zurück.',
       cueAbove: 'Rechtes Knie nicht überstrecken: Kniescheibe hoch.',
       why: 'Feste, gestreckte Beine tragen die Vorbeuge und lassen den Rumpf frei hängen.', weight: 3,
     },
     {
-      id: 'prasarita_padottanasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 6], label: 'Becken',
+      id: 'prasarita_padottanasana.hips_level', view: 'side', measure: tilt('left_hip', 'right_hip', 'horizontal'),
+      range: [0, 8], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüften gleich hoch, Gewicht gleichmäßig auf beide Füße.',
-      why: 'Das Becken beugt symmetrisch aus den Hüftgelenken; ein schiefes Becken zeigt ungleiche Beinarbeit.', weight: 3,
+      why: 'Das Becken beugt symmetrisch aus den Hüftgelenken; ein schiefes Becken zeigt ungleiche Beinarbeit.', weight: 2,
     },
     {
-      id: 'prasarita_padottanasana.shoulders_level', view: 'front', measure: tilt('left_shoulder', 'right_shoulder', 'horizontal'),
-      range: [0, 8], label: 'Schultern',
-      cueBelow: 'Schultern waagrecht halten.',
-      cueAbove: 'Schultern ausgleichen: beide gleich tief, Rumpf nicht seitlich drehen.',
-      why: 'Der Rumpf hängt mittig zwischen den Beinen und wird nicht verdreht.', weight: 2,
-    },
-    {
-      id: 'prasarita_padottanasana.leg_spread', view: 'front', measure: angle('left_ankle', 'mid_hip', 'right_ankle'),
-      range: [55, 110], margin: 10, label: 'Grätschwinkel',
+      id: 'prasarita_padottanasana.leg_spread', view: 'side', measure: angle('left_ankle', 'mid_hip', 'right_ankle'),
+      range: [55, 110], margin: 10, label: 'Fußabstand',
       cueBelow: 'Füße weiter auseinander stellen, etwa eine Beinlänge Abstand.',
       cueAbove: 'Füße etwas näher zusammen: die Beine sollen nicht überspreizen, damit das Becken sicher über den Füßen bleibt.',
       why: 'Eine weite, aber kontrollierte Grätsche gibt Raum für den Rumpf, ohne die Beine zu überlasten.', weight: 1,
@@ -176,35 +170,28 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
     },
   ],
 
-  // ------------------------------------------------- Parivrtta Trikonasana (lead = HINTERES Bein = Seite der unteren Hand)
+  // ------------------------------------------------- Parivrtta Trikonasana (lead = VORDERES Bein, ohne sideCue; Seite aus dem Schritt)
   parivrtta_trikonasana: [
     {
-      id: 'parivrtta_trikonasana.front_leg_straight', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
+      id: 'parivrtta_trikonasana.front_leg_straight', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
       range: [165, 180], label: 'Vorderes Bein',
       cueBelow: 'Vorderes Knie strecken: Oberschenkel anspannen, Kniescheibe hochziehen.',
       cueAbove: 'Vorderes Knie nicht überstrecken: Kniescheibe hoch, Oberschenkel leicht zurück.',
       why: 'Beide Beine sind fest gestreckt, damit der Rumpf sich über dem vorderen Bein drehen kann.', weight: 3,
     },
     {
-      id: 'parivrtta_trikonasana.back_leg_straight', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
+      id: 'parivrtta_trikonasana.back_leg_straight', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
       range: [165, 180], label: 'Hinteres Bein',
       cueBelow: 'Hinteres Knie strecken: Oberschenkel hochziehen, Ferse in den Boden drücken.',
       cueAbove: 'Hinteres Knie nicht überstrecken: Kniescheibe hoch.',
       why: 'Das hintere Bein verankert die Haltung und gibt den Gegendruck zur Drehung.', weight: 3,
     },
     {
-      id: 'parivrtta_trikonasana.arms_line_vertical', view: 'side', measure: tilt('lead_wrist', 'trail_wrist', 'vertical'),
+      id: 'parivrtta_trikonasana.arms_line_vertical', view: 'front', measure: tilt('lead_wrist', 'trail_wrist', 'vertical'),
       range: [0, 15], margin: 10, label: 'Arme senkrecht',
       cueBelow: 'Arme senkrecht halten.',
       cueAbove: 'Oberen Arm senkrecht über die untere Hand ziehen: Schultern übereinander drehen, beide Arme in einer senkrechten Linie.',
       why: 'Die senkrechte Armlinie zeigt, dass sich der Rumpf wirklich dreht und die Schultern übereinander stehen.', weight: 3,
-    },
-    {
-      id: 'parivrtta_trikonasana.arms_straight_line', view: 'side', measure: angle('lead_wrist', 'mid_shoulder', 'trail_wrist'),
-      range: [155, 180], margin: 10, label: 'Arme in einer Linie',
-      cueBelow: 'Beide Arme zu einer geraden Linie strecken: Ellbogen fest, Schultern auseinander.',
-      cueAbove: 'Arme in einer Linie halten, Schultern auseinander ziehen.',
-      why: 'Die gestreckten Arme verlängern die Wirbelsäule nach oben und unten.', weight: 2,
     },
     {
       id: 'parivrtta_trikonasana.trunk_forward', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),
@@ -246,13 +233,6 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
       why: 'Von der hinteren Ferse bis zum Scheitel läuft eine lange Linie; die Drehung verkürzt sie nicht.', weight: 2,
     },
     {
-      id: 'parivrtta_parsvakonasana.trunk_lean', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),
-      range: [10, 65], margin: 10, label: 'Rumpfneigung',
-      cueBelow: 'Rumpf höher nehmen, nicht auf dem Oberschenkel ablegen.',
-      cueAbove: 'Rumpf weiter nach vorn über das vordere Bein strecken, Brustbein vorstrecken.',
-      why: 'Der Rumpf liegt nicht auf dem Oberschenkel, sondern bleibt lang und dreht sich aus der Mitte heraus.', weight: 2,
-    },
-    {
       id: 'parivrtta_parsvakonasana.front_knee_tracking', view: 'front', measure: offset('lead_knee', 'lead_ankle', 'x', undefined, true),
       range: [0, 0.15], label: 'Knie über Fuß (seitlich)',
       cueBelow: 'Knie über die Mitte des Fußes halten.',
@@ -264,36 +244,36 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
   // ------------------------------------------------------- Skandasana (lead = gebeugtes Bein, trail = gestrecktes Bein)
   skandasana: [
     {
-      id: 'skandasana.bent_knee_angle', view: 'front', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
+      id: 'skandasana.bent_knee_angle', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
       range: [50, 105], margin: 10, label: 'Gebeugtes Knie',
       cueBelow: 'Nicht tiefer sinken, als die Ferse am Boden bleibt: Gesäß etwas höher.',
       cueAbove: 'Gebeugtes Knie tiefer beugen: Gesäß zur Ferse senken, Oberschenkel in Richtung Waagrechte.',
       why: 'Das tiefe Beugen des einen Beins öffnet die Hüfte des anderen und kräftigt die Oberschenkel.', weight: 3,
     },
     {
-      id: 'skandasana.straight_leg_straight', view: 'front', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
+      id: 'skandasana.straight_leg_straight', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
       range: [165, 180], label: 'Gestrecktes Bein',
       cueBelow: 'Gestrecktes Knie durchstrecken: Oberschenkel hochziehen, Ferse fest in den Boden.',
       cueAbove: 'Gestrecktes Knie nicht überstrecken: Kniescheibe hoch.',
       why: 'Das gestreckte Bein bleibt fest und lang; die Dehnung der Innenseite entsteht nur, wenn das Knie nicht nachgibt.', weight: 3,
     },
     {
-      id: 'skandasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
+      id: 'skandasana.hips_level', view: 'side', measure: tilt('left_hip', 'right_hip', 'horizontal'),
       range: [0, 12], margin: 8, label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: Hüften nicht seitlich absacken lassen, Gewicht über dem gebeugten Bein halten.',
       why: 'Ein ruhiges Becken zeigt, dass der Schwerpunkt kontrolliert über dem gebeugten Bein liegt.', weight: 2,
     },
     {
-      id: 'skandasana.trunk_upright', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      id: 'skandasana.trunk_upright', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
       range: [0, 12], margin: 8, label: 'Rumpf',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Rumpf aufrichten: Brustbein heben, nicht über das gebeugte Bein fallen lassen.',
       why: 'Der Rumpf bleibt senkrecht und lang; das Becken sinkt, nicht der Brustkorb.', weight: 2,
     },
     {
-      id: 'skandasana.bent_knee_tracking', view: 'front', measure: offset('lead_knee', 'lead_ankle', 'x', undefined, true),
-      range: [0, 0.15], label: 'Knie über Fuß',
+      id: 'skandasana.bent_knee_tracking', view: 'side', measure: offset('lead_knee', 'lead_ankle', 'x', undefined, true),
+      range: [0, 0.2], label: 'Knie über Fuß',
       cueBelow: 'Knie über die Mitte des Fußes halten.',
       cueAbove: 'Gebeugtes Knie über den zweiten Zeh nach außen drücken, nicht nach innen fallen lassen.',
       why: 'Das Knie bleibt über dem Fuß, damit das Gelenk bei der tiefen Beuge geschützt ist.', weight: 3,
@@ -318,28 +298,28 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
     },
     {
       id: 'utthita_hasta_padangusthasana.leg_lift', view: 'side', measure: angle('trail_ankle', 'lead_hip', 'lead_ankle'),
-      range: [25, 105], margin: 10, label: 'Beinhöhe',
+      range: [25, 130], margin: 10, label: 'Beinhöhe',
       cueBelow: 'Bein nicht über das Können hinaus heben, Standbein und Rumpf bleiben aufrecht.',
       cueAbove: 'Bein höher heben, bis der Oberschenkel mindestens waagrecht ist; Gurt benutzen, wenn nötig.',
-      why: 'Das Bein wird etwa bis zur Waagrechten gehoben, ohne dass Standbein oder Rumpf dafür nachgeben.', weight: 2,
+      why: 'Das Bein wird etwa bis zur Waagrechten gehoben, ohne dass Standbein oder Rumpf dafür nachgeben.', weight: 1,
     },
     {
       id: 'utthita_hasta_padangusthasana.trunk_upright', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 12], margin: 8, label: 'Rumpf',
+      range: [0, 15], margin: 8, label: 'Rumpf',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Rumpf aufrichten: Brustbein heben, nicht zurücklehnen oder zum Bein beugen.',
       why: 'Der Rumpf steht senkrecht wie in Tadasana; das Bein hebt sich, ohne dass der Rumpf ausweicht.', weight: 3,
     },
     {
       id: 'utthita_hasta_padangusthasana.standing_leg_vertical', view: 'side', measure: tilt('trail_hip', 'trail_ankle', 'vertical'),
-      range: [0, 8], label: 'Standbein senkrecht',
+      range: [0, 10], label: 'Standbein senkrecht',
       cueBelow: 'Standbein senkrecht halten.',
       cueAbove: 'Standbein senkrecht aufrichten: Hüfte über den Standfuß, nicht zurückschieben.',
       why: 'Ein senkrechtes Standbein ist die Achse der Balance.', weight: 2,
     },
     {
       id: 'utthita_hasta_padangusthasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: die Hüfte des angehobenen Beins nach unten drehen, beide Hüften gleich hoch.',
       why: 'Das Becken bleibt waagrecht; die angehobene Hüfte darf nicht mitwandern.', weight: 2,
@@ -368,13 +348,6 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: die Hüfte des umschlingenden Beins nicht hochziehen, beide Hüften gleich hoch.',
       why: 'Ein waagrechtes Becken zeigt, dass das Standbein sauber arbeitet.', weight: 2,
-    },
-    {
-      id: 'garudasana.shoulders_level', view: 'front', measure: tilt('left_shoulder', 'right_shoulder', 'horizontal'),
-      range: [0, 10], margin: 8, label: 'Schultern',
-      cueBelow: 'Schultern waagrecht halten.',
-      cueAbove: 'Schultern ausgleichen: beide gleich hoch, Schulterblätter nach unten.',
-      why: 'Gleich hohe Schultern verhindern, dass die Armverschlingung den Rumpf schief zieht.', weight: 1,
     },
     {
       id: 'garudasana.balance_line', view: 'front', measure: offset('mid_hip', 'trail_ankle', 'x', undefined, true),
@@ -412,7 +385,7 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
       id: 'natarajasana.trunk_lean', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
       range: [0, 35], margin: 10, label: 'Rumpfneigung',
       cueBelow: 'Brustbein heben und leicht nach hinten öffnen, der Rumpf darf etwas nach vorn kommen.',
-      cueAbove: 'Brustbein heben, Rumpf aufrichten: Rückbeuge aus dem ganzen Rücken, nicht aus der Lendenwirbelsäule.',
+      cueAbove: 'Brustbein heben, Rumpf aufrichten: die Rückbeuge im ganzen Rücken verteilen, nicht nur im unteren Rücken.',
       why: 'Die Rückbeuge verteilt sich über die ganze Wirbelsäule, während das Becken nach vorn bleibt.', weight: 2,
     },
   ],
@@ -421,17 +394,10 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
   malasana: [
     {
       id: 'malasana.knee_angle', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
-      range: [20, 80], margin: 10, label: 'Knie',
-      cueBelow: 'Etwas höher kommen, Fersen am Boden: Gesäß nicht zu tief hängen lassen.',
+      range: [20, 90], margin: 15, label: 'Knie',
+      cueBelow: 'Nicht tiefer zwingen: Rücken lang halten, Fersen am Boden.',
       cueAbove: 'Tiefer in die Hocke sinken: Gesäß zu den Fersen, Knie weit beugen.',
       why: 'Die tiefe Hocke öffnet Hüften und Beckenboden; die Fersen bleiben am Boden.', weight: 3,
-    },
-    {
-      id: 'malasana.hip_depth', view: 'side', measure: offset('mid_hip', 'mid_knee', 'y', 'down'),
-      range: [-0.1, 1.0], margin: 0.15, label: 'Hüfte unter Knie',
-      cueBelow: 'Becken tiefer sinken lassen: Gesäß unter Kniehöhe, Oberschenkel mindestens waagrecht.',
-      cueAbove: 'Etwas höher kommen: Becken nicht auf den Fersen ablegen, Rumpf lang halten.',
-      why: 'Das Becken sinkt bis zu oder unter die Kniehöhe; so wird die Hocke zur Dehnung.', weight: 2,
     },
     {
       id: 'malasana.trunk_upright', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
@@ -447,55 +413,48 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
       cueAbove: 'Becken ausgleichen: Gewicht gleichmäßig auf beide Füße.',
       why: 'Ein waagrechtes Becken zeigt gleichmäßiges Gewicht auf beiden Beinen.', weight: 2,
     },
-    {
-      id: 'malasana.shoulders_level', view: 'front', measure: tilt('left_shoulder', 'right_shoulder', 'horizontal'),
-      range: [0, 8], label: 'Schultern',
-      cueBelow: 'Schultern waagrecht halten.',
-      cueAbove: 'Schultern ausgleichen: beide gleich hoch, Rumpf nicht zur Seite kippen.',
-      why: 'Der Rumpf bleibt mittig zwischen den Knien.', weight: 1,
-    },
   ],
 
   // ------------------------------------------------------- Utkata Konasana (nicht seitig)
   utkata_konasana: [
     {
-      id: 'utkata_konasana.left_knee_angle', view: 'front', measure: angle('left_hip', 'left_knee', 'left_ankle'),
+      id: 'utkata_konasana.left_knee_angle', view: 'side', measure: angle('left_hip', 'left_knee', 'left_ankle'),
       range: [85, 135], margin: 10, label: 'Linkes Knie',
       cueBelow: 'Etwas höher kommen: Oberschenkel waagrecht, nicht tiefer.',
       cueAbove: 'Linkes Knie tiefer beugen: Becken senken, Oberschenkel zur Waagrechten.',
       why: 'Die Oberschenkel arbeiten kräftig und nähern sich der Waagrechten; die Knie folgen den Zehen.', weight: 3,
     },
     {
-      id: 'utkata_konasana.right_knee_angle', view: 'front', measure: angle('right_hip', 'right_knee', 'right_ankle'),
+      id: 'utkata_konasana.right_knee_angle', view: 'side', measure: angle('right_hip', 'right_knee', 'right_ankle'),
       range: [85, 135], margin: 10, label: 'Rechtes Knie',
       cueBelow: 'Etwas höher kommen: Oberschenkel waagrecht, nicht tiefer.',
       cueAbove: 'Rechtes Knie tiefer beugen: Becken senken, Oberschenkel zur Waagrechten.',
       why: 'Die Oberschenkel arbeiten kräftig und nähern sich der Waagrechten; die Knie folgen den Zehen.', weight: 3,
     },
     {
-      id: 'utkata_konasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 6], label: 'Becken',
+      id: 'utkata_konasana.hips_level', view: 'side', measure: tilt('left_hip', 'right_hip', 'horizontal'),
+      range: [0, 8], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüften gleich hoch, Gewicht gleichmäßig auf beide Beine.',
       why: 'Gleichmäßiges Beugen beider Beine hält das Becken waagrecht.', weight: 3,
     },
     {
-      id: 'utkata_konasana.trunk_vertical', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 6], label: 'Rumpf',
+      id: 'utkata_konasana.trunk_vertical', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      range: [0, 8], label: 'Rumpf',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Rumpf mittig über das Becken heben: nicht zur Seite kippen, Brustbein heben.',
       why: 'Die Mittelachse bleibt senkrecht, der Rumpf steigt gerade aus dem Becken.', weight: 3,
     },
     {
-      id: 'utkata_konasana.left_shin_vertical', view: 'front', measure: tilt('left_knee', 'left_ankle', 'vertical'),
-      range: [0, 12], margin: 8, label: 'Linkes Schienbein',
+      id: 'utkata_konasana.left_shin_vertical', view: 'side', measure: tilt('left_knee', 'left_ankle', 'vertical'),
+      range: [0, 15], margin: 8, label: 'Linkes Schienbein',
       cueBelow: 'Linkes Knie über den Fuß halten.',
       cueAbove: 'Linkes Knie über den Knöchel drücken: Schienbein senkrecht, Knie nicht nach innen fallen lassen.',
       why: 'Die Schienbeine stehen senkrecht, damit die Knie geschützt sind und die Oberschenkel arbeiten.', weight: 2,
     },
     {
-      id: 'utkata_konasana.right_shin_vertical', view: 'front', measure: tilt('right_knee', 'right_ankle', 'vertical'),
-      range: [0, 12], margin: 8, label: 'Rechtes Schienbein',
+      id: 'utkata_konasana.right_shin_vertical', view: 'side', measure: tilt('right_knee', 'right_ankle', 'vertical'),
+      range: [0, 15], margin: 8, label: 'Rechtes Schienbein',
       cueBelow: 'Rechtes Knie über den Fuß halten.',
       cueAbove: 'Rechtes Knie über den Knöchel drücken: Schienbein senkrecht, Knie nicht nach innen fallen lassen.',
       why: 'Die Schienbeine stehen senkrecht, damit die Knie geschützt sind und die Oberschenkel arbeiten.', weight: 2,
@@ -528,9 +487,9 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
     {
       id: 'viparita_virabhadrasana.trunk_lean_back', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
       range: [8, 45], margin: 10, label: 'Rumpf zurückgeneigt',
-      cueBelow: 'Rumpf weiter über das hintere Bein zurückneigen: Brustbein öffnen, Seitrumpf lang.',
+      cueBelow: 'Rumpf über das hintere Bein zurückneigen: Taille lang, Brustbein zur Decke öffnen.',
       cueAbove: 'Rumpf weniger zurückfallen lassen: Taille lang, Brustbein heben, Gewicht in den Beinen.',
-      why: 'Der Rumpf neigt sich aus dem Becken lang über das hintere Bein; er fällt nicht in die Lendenwirbelsäule.', weight: 2,
+      why: 'Der Rumpf neigt sich aus dem Becken lang über das hintere Bein; er fällt nicht in die Lendenwirbelsäule.', weight: 3,
     },
     {
       id: 'viparita_virabhadrasana.front_arm_up', view: 'side', measure: angle('lead_hip', 'lead_shoulder', 'lead_wrist'),
@@ -615,28 +574,21 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
   // ------------------------------------------------------- Parighasana (lead = gestrecktes Bein, trail = kniendes Bein)
   parighasana: [
     {
-      id: 'parighasana.extended_leg_straight', view: 'front', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
+      id: 'parighasana.extended_leg_straight', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
       range: [165, 180], label: 'Gestrecktes Bein',
       cueBelow: 'Gestrecktes Knie durchstrecken: Oberschenkel hochziehen, Ferse nach außen schieben.',
       cueAbove: 'Gestrecktes Knie nicht überstrecken: Kniescheibe hoch.',
       why: 'Das gestreckte Bein ist die lange Seitenlinie des Tores; die Seitdehnung braucht diese feste Verlängerung.', weight: 3,
     },
     {
-      id: 'parighasana.kneeling_thigh_vertical', view: 'front', measure: tilt('trail_hip', 'trail_knee', 'vertical'),
+      id: 'parighasana.kneeling_thigh_vertical', view: 'side', measure: tilt('trail_hip', 'trail_knee', 'vertical'),
       range: [0, 12], margin: 8, label: 'Kniender Oberschenkel',
       cueBelow: 'Oberschenkel senkrecht halten.',
       cueAbove: 'Oberschenkel des knienden Beins senkrecht aufrichten: Hüfte über das Knie.',
       why: 'Der kniende Oberschenkel steht senkrecht und bildet die stabile Basis für die Seitneigung.', weight: 3,
     },
     {
-      id: 'parighasana.hip_over_knee', view: 'front', measure: offset('trail_hip', 'trail_knee', 'x', undefined, true),
-      range: [0, 0.12], margin: 0.08, label: 'Hüfte über Knie',
-      cueBelow: 'Hüfte über dem Knie halten.',
-      cueAbove: 'Hüfte über das kniende Knie schieben: nicht zur Seite wegschieben.',
-      why: 'Die Hüfte bleibt über dem Knie; die Seitneigung kommt aus der Taille, nicht aus verschobenem Becken.', weight: 2,
-    },
-    {
-      id: 'parighasana.trunk_side_bend', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      id: 'parighasana.trunk_side_bend', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
       range: [15, 80], margin: 10, label: 'Seitneigung',
       cueBelow: 'Rumpf weiter zur Seite über das gestreckte Bein strecken, Taille lang.',
       cueAbove: 'Rumpf aufrichten und lang halten: nicht auf das Bein fallen lassen.',
@@ -687,7 +639,7 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
     },
     {
       id: 'padahastasana.hip_over_feet', view: 'side', measure: offset('mid_hip', 'mid_ankle', 'x', 'forward'),
-      range: [-0.15, 0.4], margin: 0.12, label: 'Hüfte über Füßen',
+      range: [-0.15, 0.3], margin: 0.12, label: 'Hüfte über Füßen',
       cueBelow: 'Becken etwas nach vorn über die Fußmitte bringen, damit die Hände unter die Füße kommen.',
       cueAbove: 'Becken zurück über die Füße ziehen: Gewicht nicht zu weit auf die Zehen kippen.',
       why: 'Das Gewicht wandert leicht nach vorn, damit die Hände unter die Füße kommen, ohne das Gleichgewicht zu verlieren.', weight: 2,
@@ -725,25 +677,11 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
       why: 'Gestreckte Beine lassen die Dehnung der Beininnenseiten entstehen und stützen das Becken.', weight: 3,
     },
     {
-      id: 'upavistha_konasana.leg_spread', view: 'front', measure: angle('left_ankle', 'mid_hip', 'right_ankle'),
-      range: [80, 180], margin: 12, label: 'Grätschwinkel',
-      cueBelow: 'Beine weiter spreizen, so weit das Becken aufrecht bleibt.',
-      cueAbove: 'Spreizung nicht erzwingen: lieber das Becken aufrecht halten als die Beine überdehnen.',
-      why: 'Die Beine öffnen sich so weit, wie das Becken aufrecht bleibt; Zwang überlastet die Innenseiten.', weight: 2,
-    },
-    {
       id: 'upavistha_konasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 6], label: 'Becken',
+      range: [0, 8], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: Gewicht gleichmäßig auf beide Sitzbeine.',
-      why: 'Beide Sitzbeine tragen gleich, das Becken bleibt gerade für eine symmetrische Beuge.', weight: 3,
-    },
-    {
-      id: 'upavistha_konasana.shoulders_level', view: 'front', measure: tilt('left_shoulder', 'right_shoulder', 'horizontal'),
-      range: [0, 8], label: 'Schultern',
-      cueBelow: 'Schultern waagrecht halten.',
-      cueAbove: 'Schultern ausgleichen: beide gleich hoch, Rumpf nicht verdrehen.',
-      why: 'Gleich hohe Schultern zeigen, dass der Rumpf mittig zwischen den Beinen bleibt.', weight: 1,
+      why: 'Beide Sitzbeine tragen gleich, das Becken bleibt gerade für eine symmetrische Beuge.', weight: 2,
     },
   ],
 };
