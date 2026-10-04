@@ -99,6 +99,8 @@ export interface PoseDef {
   sided: boolean;
   /** Which views give useful feedback, best first. */
   bestViews: View[];
+  /** Other names users type for this pose (any language, lowercase not required). */
+  aliases?: string[];
   /** Notes on detection limits for this pose (occlusion, depth...). */
   limits?: string;
   /** Sided poses: how to tell the lead side from the landmarks. */

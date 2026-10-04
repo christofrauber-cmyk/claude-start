@@ -40,7 +40,7 @@ function diagram(): SVGElement {
 function slot(view: ViewName, title: string, hint: string): HTMLElement {
   const file = state.files[view];
   const input = h('input', {
-    type: 'file', accept: 'video/*,.mov,.mp4', capture: 'environment', class: 'sr', id: `file-${view}`,
+    type: 'file', accept: 'video/*,.mov,.mp4', class: 'sr', id: `file-${view}`,
     onchange: (e: Event) => {
       const f = (e.target as HTMLInputElement).files?.[0];
       if (f) { if (file) releaseVideo(file); state.files[view] = f; delete state.included[view]; rerender(); }
