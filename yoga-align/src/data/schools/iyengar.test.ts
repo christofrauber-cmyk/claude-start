@@ -25,6 +25,8 @@ function refsOf(rule: Rule): string[] {
 describe('IYENGAR rule set structure', () => {
   it('has rules for every pose', () => {
     for (const id of CORE_POSE_IDS) expect(IYENGAR.rules[id]?.length ?? 0, id).toBeGreaterThanOrEqual(3);
+    for (const p of POSES) expect(IYENGAR.rules[p.id]?.length ?? 0, p.id).toBeGreaterThanOrEqual(2);
+    for (const id of IYENGAR.draftPoseIds ?? []) expect(CORE_POSE_IDS, id).not.toContain(id);
   });
 
   it('has no rules for unknown poses', () => {

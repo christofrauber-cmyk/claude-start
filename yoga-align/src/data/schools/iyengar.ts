@@ -1,4 +1,8 @@
 import type { Measure, Rule, School } from '../../core/types';
+import { RULES_EXTRA_1 } from './iyengar-extra-1';
+import { RULES_EXTRA_2 } from './iyengar-extra-2';
+import { RULES_EXTRA_3 } from './iyengar-extra-3';
+import { RULES_EXTRA_4 } from './iyengar-extra-4';
 
 /*
  * Iyengar-Regelwerk. Fachlich geprüft von Christof (Oktober 2026).
@@ -1297,12 +1301,16 @@ const rules: Record<string, Rule[]> = {
   ],
 };
 
+/** Rules for the 79 additional poses: drafts, not yet reviewed by Christof. */
+const EXTRA: Record<string, Rule[]> = { ...RULES_EXTRA_1, ...RULES_EXTRA_2, ...RULES_EXTRA_3, ...RULES_EXTRA_4 };
+
 export const IYENGAR: School = {
   id: 'iyengar',
   name: 'Iyengar',
   description:
     'Präzise, klassische Ausrichtung nach B.K.S. Iyengar: gestreckte Beine mit aktiven Oberschenkeln, ' +
     'senkrechte Rumpfachse, Linien durch Arme und Beine und exakte Winkel in den Gelenken.',
-  status: 'Fachlich geprüft von Christof',
-  rules,
+  status: 'Fachlich geprüft von Christof (Grundposen)',
+  rules: { ...rules, ...EXTRA },
+  draftPoseIds: Object.keys(EXTRA),
 };
