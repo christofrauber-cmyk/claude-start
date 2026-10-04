@@ -1,7 +1,7 @@
 import type { Measure, Rule, School } from '../../core/types';
 
 /*
- * ENTWURF – Iyengar-Regelwerk. Fachlich zu prüfen durch Christof.
+ * Iyengar-Regelwerk. Fachlich geprüft von Christof (Oktober 2026).
  *
  * Konventionen
  *  - Kameras relativ zur MATTE: 'front' = kurze Mattenkante (Blick entlang der Matte),
@@ -11,6 +11,7 @@ import type { Measure, Rule, School } from '../../core/types';
  *    Beugung des vorderen Knies; 'front' sieht nur die seitliche Spur der Knie (Mattenbreite).
  *  - 'lead' = die im Schritt genannte Seite:
  *      Krieger I/II, Trikonasana, Parsvakonasana: vorderes (gebeugtes bzw. vorderes) Bein.
+ *      Anjaneyasana und Anjaneyasana (Knie gehoben): vorderes (gebeugtes) Bein.
  *      Vrksasana: das ANGEHOBENE Bein ("Baum rechts" = rechter Fuß am linken Oberschenkel, wie in Light on Yoga);
  *        trail = Standbein.
  *      Ardha Chandrasana: STANDBEIN (kommt aus Trikonasana derselben Seite); trail = angehobenes Bein.
@@ -1115,6 +1116,66 @@ const rules: Record<string, Rule[]> = {
     },
   ],
 
+  // ------------------------------------- Anjaneyasana mit gehobenem Knie (lead = vorderes Bein)
+  anjaneyasana_high: [
+    {
+      id: 'anjaneyasana_high.front_knee_angle', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
+      range: [82, 105], margin: 10, label: 'Vorderes Knie',
+      cueBelow: 'Vorderes Knie nicht weiter als 90° beugen: Schritt weiter öffnen.',
+      cueAbove: 'Vorderes Knie tiefer beugen, Becken nach vorn und unten sinken lassen.',
+      why: 'Das vordere Knie bildet etwa einen rechten Winkel, das Becken sinkt tief zwischen die Beine.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana_high.knee_over_heel', view: 'side', measure: offset('lead_knee', 'lead_ankle', 'x', 'forward'),
+      range: [-0.15, 0.12], margin: 0.1, label: 'Knie über Ferse',
+      cueBelow: 'Knie nach vorn über die Ferse bringen.',
+      cueAbove: 'Knie zurück über die Ferse, Schienbein senkrecht: Schritt weiter öffnen.',
+      why: 'Das Schienbein steht senkrecht; das Knie schiebt nicht über den Fuß hinaus und wird nicht überlastet.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana_high.back_leg_straight', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
+      range: [165, 180], label: 'Hinteres Bein',
+      cueBelow: 'Hinteres Knie strecken: Oberschenkel hochziehen, durch die Ferse nach hinten schieben.',
+      cueAbove: 'Hinteres Knie nicht überstrecken: Kniescheibe hoch, Oberschenkel fest.',
+      why: 'Das gestreckte hintere Bein gibt der Haltung Länge und Halt, das Becken sinkt aus der Kraft beider Beine.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana_high.trunk_upright', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      range: [0, 12], margin: 10, label: 'Rumpf',
+      cueBelow: 'Rumpf aufrecht halten.',
+      cueAbove: 'Rumpf aufrichten: Brustbein heben, nicht zum vorderen Bein lehnen.',
+      why: 'Der Rumpf steigt lang aus dem Becken auf, die Hüftbeuger des hinteren Beins dehnen sich.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana_high.arms_overhead', view: 'side', measure: angle('mid_hip', 'mid_shoulder', 'mid_wrist'),
+      range: [150, 180], label: 'Arme über Kopf',
+      cueBelow: 'Arme weiter nach oben strecken, neben den Ohren, in Verlängerung des Rumpfes.',
+      cueAbove: 'Arme nicht zu weit nach hinten ziehen: Rippen weich, Arme in Linie mit dem Rumpf.',
+      why: 'Die Arme verlängern die Wirbelsäule nach oben; der Brustkorb öffnet sich ohne Hohlkreuz.', weight: 2,
+    },
+    {
+      id: 'anjaneyasana_high.front_knee_tracking', view: 'front', measure: offset('lead_knee', 'lead_ankle', 'x', undefined, true),
+      range: [0, 0.12], label: 'Knie über Fuß (seitlich)',
+      cueBelow: 'Knie über die Mitte des Fußes halten.',
+      cueAbove: 'Vorderes Knie über den zweiten Zeh ausrichten, nicht nach innen oder außen sinken lassen.',
+      why: 'Das Knie bleibt in Richtung der Zehen, damit das Gelenk nicht verdreht wird.', weight: 3,
+    },
+    {
+      id: 'anjaneyasana_high.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
+      range: [0, 8], label: 'Becken',
+      cueBelow: 'Becken waagrecht halten.',
+      cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch und nach vorn gerichtet.',
+      why: 'Das Becken blickt gerade nach vorn, die hintere Hüfte zieht nach vorn.', weight: 2,
+    },
+    {
+      id: 'anjaneyasana_high.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
+      range: [0, 6], label: 'Rumpf seitlich',
+      cueBelow: 'Rumpf mittig halten.',
+      cueAbove: 'Rumpf mittig über das Becken ziehen: nicht zur Seite kippen.',
+      why: 'Der Rumpf steigt mittig aus dem Becken.', weight: 2,
+    },
+  ],
+
   // --------------------------------------------------- Virabhadrasana III (lead = STANDBEIN, trail = angehobenes Bein)
   virabhadrasana_3: [
     {
@@ -1242,6 +1303,6 @@ export const IYENGAR: School = {
   description:
     'Präzise, klassische Ausrichtung nach B.K.S. Iyengar: gestreckte Beine mit aktiven Oberschenkeln, ' +
     'senkrechte Rumpfachse, Linien durch Arme und Beine und exakte Winkel in den Gelenken.',
-  status: 'Entwurf – fachlich zu prüfen durch Christof',
+  status: 'Fachlich geprüft von Christof',
   rules,
 };

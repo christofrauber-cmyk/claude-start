@@ -88,7 +88,7 @@ export function renderResults(): HTMLElement {
   }, SCHOOLS.map((s) => h('option', { value: s.id, selected: s.id === state.schoolId }, s.name)));
 
   const controls = h('div', { class: 'card controls stack-s' },
-    h('div', { class: 'row' }, h('span', { class: 'lbl' }, 'Schule'), schoolSel, h('span', { class: 'tag warn' }, school()?.status ?? '')),
+    h('div', { class: 'row' }, h('span', { class: 'lbl' }, 'Schule'), schoolSel, h('span', { class: /Entwurf/.test(school()?.status ?? '') ? 'tag warn' : 'tag' }, school()?.status ?? '')),
     h('label', { class: 'row check' },
       h('input', { type: 'checkbox', checked: state.overlay, onchange: (e: Event) => { state.overlay = (e.target as HTMLInputElement).checked; rerender(); } }),
       'Overlay ein'),

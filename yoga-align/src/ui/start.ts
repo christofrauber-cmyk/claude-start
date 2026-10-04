@@ -62,7 +62,7 @@ export function renderStart(): HTMLElement {
       h('h2', {}, '1. Schule wählen'),
       h('label', { for: 'school', class: 'sr' }, 'Schule'),
       schoolSelect,
-      school ? h('p', { class: 'muted' }, h('span', { class: 'tag warn' }, school.status), ' ', school.description) : null,
+      school ? h('p', { class: 'muted' }, h('span', { class: /Entwurf/.test(school.status) ? 'tag warn' : 'tag' }, school.status), ' ', school.description) : null,
     ),
     h('section', { class: 'stack-s' },
       h('h2', {}, '2. Ablauf wählen'),
