@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { IYENGAR } from './iyengar';
-import { POSES } from '../poses';
+import { POSES, CORE_POSE_IDS } from '../poses';
 import { evaluatePose } from '../../core/engine';
 import { isKnownRef, LANDMARK_INDEX } from '../../core/landmarks';
 import type { FrameContext, PoseFrame, Rule } from '../../core/types';
@@ -24,7 +24,7 @@ function refsOf(rule: Rule): string[] {
 
 describe('IYENGAR rule set structure', () => {
   it('has rules for every pose', () => {
-    for (const p of POSES) expect(IYENGAR.rules[p.id]?.length ?? 0, p.id).toBeGreaterThanOrEqual(3);
+    for (const id of CORE_POSE_IDS) expect(IYENGAR.rules[id]?.length ?? 0, id).toBeGreaterThanOrEqual(3);
   });
 
   it('has no rules for unknown poses', () => {

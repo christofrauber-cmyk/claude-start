@@ -26,3 +26,11 @@ export function fmtTime(s: number): string {
   const m = Math.floor(s / 60);
   return `${m}:${fmt(s - m * 60, 1).padStart(4, '0')}`;
 }
+
+/** Torso (shoulder to hip) of an adult is roughly 50 cm; good enough for a hint. */
+export const TORSO_CM = 50;
+/** Offset in torso lengths as approximate centimetres, e.g. "≈ 15 cm". */
+export const fmtCm = (torsoLengths: number, signed = false) => {
+  const cm = Math.round(torsoLengths * TORSO_CM);
+  return `≈ ${signed && cm > 0 ? '+' : cm < 0 ? '−' : ''}${Math.abs(cm)} cm`;
+};

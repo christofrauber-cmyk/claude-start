@@ -1,4 +1,4 @@
-import { h, fmt, fmtSigned, fmtTime } from './dom';
+import { h, fmt, fmtCm, fmtTime } from './dom';
 import { go, rerender, state, type ViewName } from './state';
 import { SCHOOLS } from '../data/schools';
 import { POSE_BY_ID } from '../data/poses';
@@ -288,11 +288,11 @@ function viewSection(v: ViewName, i: number): HTMLElement {
 
 function rangeText(r: Rule): string {
   const [lo, hi] = r.range;
-  if (r.measure.kind === 'offset') return `${fmtSigned(lo)} bis ${fmtSigned(hi)} T`;
+  if (r.measure.kind === 'offset') return `${fmtCm(lo, true)} bis ${fmtCm(hi, true).replace('≈ ', '')}`;
   return `${fmt(lo)}–${fmt(hi)}°`;
 }
 function valueText(r: Rule, val: number): string {
-  return r.measure.kind === 'offset' ? `${fmtSigned(val)} T` : `${fmt(val)}°`;
+  return r.measure.kind === 'offset' ? fmtCm(val, true) : `${fmt(val)}°`;
 }
 
 function renderRules(into: HTMLElement, e: StepEval) {
@@ -320,6 +320,6 @@ function renderRules(into: HTMLElement, e: StepEval) {
         r.rule.why ? h('details', {}, h('summary', {}, 'Warum?'), h('p', {}, r.rule.why)) : null,
       );
     })),
-    h('p', { class: 'muted small' }, 'T = Torsolänge (Schulter bis Hüfte).'),
+    h('p', { class: 'muted small' }, 'cm-Angaben sind grob geschätzt (Annahme: Rumpf Schulter–Hüfte ≈ 50 cm).'),
   );
 }

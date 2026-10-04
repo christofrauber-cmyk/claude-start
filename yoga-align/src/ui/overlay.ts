@@ -1,3 +1,4 @@
+import { fmtCm } from './dom';
 import { LANDMARK_INDEX, SKELETON } from '../core/landmarks';
 import type { PoseFrame, Pt, RuleResult, Status } from '../core/types';
 
@@ -166,7 +167,7 @@ export function drawOverlay(
       dot(v.a, lw * 2, color);
       if (bad && v.idealA) arrow(v.a, v.idealA, color);
       anchor = v.a;
-      text = `${v.value >= 0 ? '+' : '−'}${Math.abs(v.value).toFixed(2).replace('.', ',')} T`;
+      text = fmtCm(v.value, true);
     }
     label(anchor, text, color);
   }

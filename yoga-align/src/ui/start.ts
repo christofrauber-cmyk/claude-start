@@ -2,6 +2,7 @@ import { h } from './dom';
 import { go, loadCustomSequences, rerender, saveCustomSequences, state } from './state';
 import { DEFAULT_SCHOOL_ID, SCHOOLS } from '../data/schools';
 import { POSES, POSE_BY_ID } from '../data/poses';
+import { parseSequence } from '../core/parse';
 import { BUILT_IN_SEQUENCES } from '../data/sequences';
 import type { Sequence, SequenceStep, Side } from '../core/types';
 
@@ -10,6 +11,8 @@ let draft: { name: string; steps: SequenceStep[] } = { name: '', steps: [] };
 let addPose = POSES[0].id;
 let addSide: Side | undefined; // undefined = automatisch
 let storageWarn = false;
+let pasteText = '';
+let pasteUnknown: string[] = [];
 
 export const allSequences = (): Sequence[] => [...BUILT_IN_SEQUENCES, ...(custom ??= loadCustomSequences())];
 export const currentSequence = (): Sequence | undefined => allSequences().find((s) => s.id === state.sequenceId);
@@ -97,9 +100,33 @@ function renderBuilder(): HTMLElement {
   const details = h('details', { class: 'card builder', open: draft.steps.length > 0 || undefined },
     h('summary', {}, 'Eigenen Ablauf zusammenstellen'),
     h('div', { class: 'stack-s' },
+      h('label', { for: 'paste', class: 'lbl' }, 'Ablauf als Text einfügen'),
+      h('textarea', {
+        id: 'paste', rows: 4, class: 'paste',
+        placeholder: 'z. B. Tadasana, Krieger 2 rechts, Krieger 2 links, Down Dog, Kindhaltung',
+        value: pasteText,
+        oninput: (e: Event) => { pasteText = (e.target as HTMLTextAreaElement).value; },
+      }),
+      h('div', { class: 'row' },
+        h('button', {
+          class: 'btn', type: 'button',
+          onclick: () => {
+            const items = parseSequence(pasteText, POSES);
+            for (const it of items) if (it.step) draft.steps.push({ ...it.step });
+            pasteUnknown = items.filter((it) => !it.pose).map((it) => it.text);
+            if (items.some((it) => it.step)) pasteText = '';
+            rerender();
+          },
+        }, 'Übernehmen'),
+        h('span', { class: 'muted small' }, 'Deutsch, Englisch oder Sanskrit; „rechts“/„links“/„beide Seiten“ nach der Haltung.'),
+      ),
+      pasteUnknown.length
+        ? h('p', { class: 'notice' }, 'Nicht erkannt: ', pasteUnknown.map((t) => `„${t}“`).join(', '), '. Bitte einzeln unten hinzufügen.')
+        : null,
+      h('p', { class: 'lbl' }, 'Oder einzeln hinzufügen'),
       h('div', { class: 'row' },
         h('select', { 'aria-label': 'Haltung', class: 'grow', onchange: (e: Event) => { addPose = (e.target as HTMLSelectElement).value; rerender(); } },
-          POSES.map((p) => h('option', { value: p.id, selected: p.id === addPose }, `${p.nameDe} (${p.sanskrit})`))),
+          [...POSES].sort((a, b) => a.nameDe.localeCompare(b.nameDe, 'de')).map((p) => h('option', { value: p.id, selected: p.id === addPose }, `${p.nameDe} (${p.sanskrit})`))),
         pose.sided ? sideSelect(addSide, (v) => { addSide = v; }) : null,
         h('button', {
           class: 'btn', type: 'button',
