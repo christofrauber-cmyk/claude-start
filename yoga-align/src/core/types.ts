@@ -115,6 +115,8 @@ export interface School {
   description: string;
   /** Rules per pose id. A pose without rules is shown but not judged. */
   rules: Record<string, Rule[]>;
+  /** Pose ids whose rules are still an unreviewed draft. */
+  draftPoseIds?: string[];
   /** Free-text status, e.g. "Entwurf – fachlich zu prüfen". */
   status: string;
 }

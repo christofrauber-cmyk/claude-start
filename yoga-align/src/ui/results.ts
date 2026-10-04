@@ -20,6 +20,7 @@ const STATUS_DE: Record<Status, string> = { ok: 'passt', minor: 'leicht daneben'
 const WINDOW_S = 1;
 
 const school = () => SCHOOLS.find((s) => s.id === state.schoolId) ?? SCHOOLS[0];
+const isDraft = (poseId: string) => !!school().draftPoseIds?.includes(poseId);
 const steps = (): SequenceStep[] => state.analyzed?.steps ?? [];
 
 // ----- evaluation -----
@@ -145,7 +146,7 @@ function overview(present: ViewName[]): HTMLElement {
       h('button', { class: 'card step', type: 'button', onclick: () => { state.stepIndex = i; rerender(); window.scrollTo(0, 0); } },
         h('span', { class: 'num' }, i + 1),
         h('span', { class: 'grow' },
-          h('strong', {}, stepLabel(s)),
+          h('strong', {}, stepLabel(s)), isDraft(s.poseId) ? h('span', { class: 'tag warn' }, 'Regeln: Entwurf') : null,
           h('span', { class: 'muted block' }, p?.sanskrit ?? '', auto ? ` · Seite: ${SIDE_DE[auto]} (erkannt)` : '')),
         h('span', { class: 'badges' }, badges),
       ));
@@ -173,6 +174,7 @@ function detail(i: number, present: ViewName[]): HTMLElement {
     h('div', {},
       h('h2', {}, `${i + 1}. ${stepLabel(s)}`),
       h('p', { class: 'muted' }, p?.sanskrit, ' · ', p?.nameEn),
+      isDraft(s.poseId) ? h('p', { class: 'notice' }, 'Die Regeln für diese Haltung sind ein Entwurf und noch nicht fachlich geprüft.') : null,
       p?.limits ? h('p', { class: 'muted' }, 'Grenzen: ', p.limits) : null,
       present.length === 1 && p && p.bestViews[0] !== present[0]
         ? h('p', { class: 'notice' }, `Für diese Haltung wäre die ${VIEW_DE[p.bestViews[0]]}-Ansicht am aussagekräftigsten – sie fehlt.`)
