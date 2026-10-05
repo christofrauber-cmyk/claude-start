@@ -1,5 +1,5 @@
 // Compares Haiku and Sonnet on stills from the test videos: accuracy, latency, real cost.
-// Usage: ANTHROPIC_API_KEY=... npx tsx scripts/eval.ts /path/to/yoga-testvideos [fast|accurate ...]
+// Usage: ANTHROPIC_API_KEY=... (or EVAL_ANTHROPIC_API_KEY, e.g. in managed cloud sessions where ANTHROPIC_API_KEY is reserved) npx tsx scripts/eval.ts /path/to/yoga-testvideos [fast|accurate ...]
 // Needs ffmpeg. The stills are written to eval/stills/ (git-ignored) and never committed.
 import Anthropic from '@anthropic-ai/sdk';
 import { execFileSync } from 'node:child_process';
@@ -24,7 +24,9 @@ const still = (c: Case) => {
   return readFileSync(out, 'base64');
 };
 
-const client = new Anthropic();
+// Cloud sessions reserve ANTHROPIC_API_KEY/BASE_URL for the host, so a separate variable talks to the public API directly.
+const evalKey = process.env.EVAL_ANTHROPIC_API_KEY;
+const client = evalKey ? new Anthropic({ apiKey: evalKey, baseURL: 'https://api.anthropic.com' }) : new Anthropic();
 for (const m of models) {
   let ok = 0, top3 = 0, cost = 0, ms = 0;
   console.log(`\n== ${MODELS[m]} ==`);
