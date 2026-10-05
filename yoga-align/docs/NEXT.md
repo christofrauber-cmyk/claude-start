@@ -4,14 +4,15 @@ Branch: `claude/sleepy-pasteur-ixqbev`. Live app: GitHub Pages `/claude-start/yo
 
 ## Decided by Christof
 - **Option A: automatic pose recognition by a vision model.** One still per hold (front and/or side) goes to the Claude API, which names the pose. No sequence input needed anymore.
-- **Global consent:** a one-time switch in the settings, revocable. Users who decline get option C: the app shows its top-3 guesses per hold (`poseFit` in `src/core/match.ts`) and the user confirms with one tap.
+- **Global consent:** one-time, revocable. **The app works only with consent** (decided 2026-10-05): no local fallback (option C dropped). Declining stops at the start screen.
 - **Commercial use is planned**, so research-only datasets are out.
 - **Cost estimate:** Haiku 4.5 ≈ $0.002 per pose, Sonnet 5.5 ≈ $0.006 per pose.
 
 ## Done (session 3)
 - Auto mode in the app (default on the start screen), consent box + Einstellungen, review screen with one-tap correction, option C fallback, sequence mode unchanged. Tested end-to-end in Chromium on the front test video (local mode and mocked AI).
 - Worker in `worker/` (builds with `wrangler deploy --dry-run`), eval script `worker/scripts/eval.ts` with ground truth `worker/eval/cases.json` (17 stills from both test videos).
-- Local fallback on the front video: 5/9 poses right at once, 7/9 among the tap options. Krieger III and Janu Sirsasana are missed.
+- Local guessing was measured (5/9 right on the front video) and then removed on Christof's decision.
+- Note: the live app now stops at "KI-Erkennung wird eingerichtet" until the Worker is deployed and the repository variable `VITE_CLASSIFY_URL` is set.
 - Blocked: no `ANTHROPIC_API_KEY` in the session environment yet, so the eval has not run.
 
 ## To do (original list)

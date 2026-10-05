@@ -19,7 +19,7 @@ export function render(): void {
     h('header', { class: 'top' }, h('div', { class: 'wrap' }, h('span', { class: 'logo' }, 'Yoga-Ausrichtung'))),
     h('main', { class: 'wrap' }, screen),
     h('footer', { class: 'wrap foot' },
-      aiEnabled() ? 'Alles wird lokal im Browser berechnet; zur Erkennung der Haltungen gehen einzelne Standbilder an einen KI-Dienst. ' : 'Alles wird lokal im Browser berechnet. ',
+      aiEnabled() ? 'Die Körperpunkte werden lokal im Browser berechnet; zur Erkennung der Haltungen gehen einzelne Standbilder an einen KI-Dienst. ' : '',
       'Keine Ärztin, keine Lehrerin – nur eine Orientierungshilfe.'),
   );
 }

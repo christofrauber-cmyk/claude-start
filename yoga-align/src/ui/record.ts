@@ -1,6 +1,5 @@
 import { h, fmt } from './dom';
 import { AUTO_ID, go, rerender, state, type ViewName } from './state';
-import { aiEnabled } from './ai';
 import { SCHOOLS } from '../data/schools';
 import { POSE_BY_ID } from '../data/poses';
 import { currentSequence, stepLabel } from './start';
@@ -148,7 +147,7 @@ export function renderRecord(): HTMLElement {
         slot('side', 'Seitenaufnahme (Seite)', 'Video von der langen Mattenseite.'),
       ),
       h('p', { class: 'muted' }, 'Mindestens ein Video ist nötig. Das Video wird nur im Browser gelesen und nicht hochgeladen',
-        auto && aiEnabled() ? '; zur Erkennung geht pro Haltung ein Standbild an den KI-Dienst.' : '.'),
+        auto ? '; zur Erkennung geht pro Haltung ein Standbild an den KI-Dienst.' : '.'),
     ),
     coverage(),
     h('div', { class: 'actions' },

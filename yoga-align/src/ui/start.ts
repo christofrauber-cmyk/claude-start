@@ -24,6 +24,7 @@ export function stepLabel(s: SequenceStep): string {
 }
 
 export function renderStart(): HTMLElement {
+  if (!aiEnabled()) return renderGate();
   custom ??= loadCustomSequences();
   if (!state.schoolId) state.schoolId = SCHOOLS.some((s) => s.id === DEFAULT_SCHOOL_ID) ? DEFAULT_SCHOOL_ID : (SCHOOLS[0]?.id ?? '');
   const school = SCHOOLS.find((s) => s.id === state.schoolId) ?? SCHOOLS[0];
@@ -61,9 +62,7 @@ export function renderStart(): HTMLElement {
     h('input', { type: 'radio', name: 'seq', checked: auto, onchange: () => { state.sequenceId = AUTO_ID; rerender(); } }),
     h('span', { class: 'choice-body' },
       h('strong', {}, 'Automatisch erkennen', h('span', { class: 'tag' }, 'ohne Ablauf')),
-      h('span', { class: 'muted' }, aiEnabled()
-        ? 'Einfach üben und filmen. Die KI erkennt jede gehaltene Haltung, du bestätigst kurz.'
-        : 'Einfach üben und filmen. Die App schlägt pro gehaltener Haltung die passendsten vor, du bestätigst mit einem Tipp.'),
+      h('span', { class: 'muted' }, 'Einfach üben und filmen. Die KI erkennt jede gehaltene Haltung, du bestätigst kurz.'),
     ));
 
   return h('div', { class: 'stack' },
@@ -72,9 +71,7 @@ export function renderStart(): HTMLElement {
       h('p', {}, 'Lade ein bis zwei Videos deiner Yogapraxis hoch (von vorne und/oder von der Seite). Die App erkennt deine Körperpunkte, vergleicht Winkel und Positionen mit den Ausrichtungsregeln einer Schule und zeigt dir pro Haltung, was passt und was du korrigieren könntest.'),
       h('div', { class: 'notice' },
         h('strong', {}, 'Wichtig: '),
-        'Diese App ersetzt keine Lehrerin und keinen Lehrer und keine ärztliche Beratung. Die Analyse erfolgt lokal in deinem Browser, das Video verlässt dein Gerät nicht',
-        aiEnabled() ? ' (für die KI-Erkennung nur einzelne Standbilder)' : '',
-        '. Bei Schmerzen oder Beschwerden höre auf und frage eine Fachperson.'),
+        'Diese App ersetzt keine Lehrerin und keinen Lehrer und keine ärztliche Beratung. Das Video verlässt dein Gerät nicht, für die Erkennung gehen nur einzelne Standbilder an die KI. Bei Schmerzen oder Beschwerden höre auf und frage eine Fachperson.'),
     ),
     h('section', { class: 'stack-s' },
       h('h2', {}, '1. Schule wählen'),
@@ -85,7 +82,6 @@ export function renderStart(): HTMLElement {
     h('section', { class: 'stack-s' },
       h('h2', {}, '2. Ablauf wählen'),
       autoCard,
-      auto ? consentBox() : null,
       h('p', { class: 'muted small' }, 'Oder einen festen Ablauf vorgeben:'),
       h('div', { class: 'stack-s' }, seqCards),
       renderBuilder(),
@@ -94,13 +90,11 @@ export function renderStart(): HTMLElement {
       h('button', { class: 'btn primary', type: 'button', disabled: !auto && (!seq || seq.steps.length === 0), onclick: () => go('record') }, 'Weiter zur Aufnahme'),
       !auto && !seq ? h('span', { class: 'muted' }, 'Bitte einen Ablauf wählen.') : null,
     ),
-    aiAvailable() ? h('details', { class: 'card settings' },
+    h('details', { class: 'card settings' },
       h('summary', {}, 'Einstellungen'),
-      h('label', { class: 'row check' },
-        h('input', { type: 'checkbox', checked: aiEnabled(), onchange: (e: Event) => { setConsent((e.target as HTMLInputElement).checked ? 'yes' : 'no'); rerender(); } }),
-        'KI-Erkennung der Haltungen (Standbilder werden übermittelt)'),
       h('p', { class: 'muted small' }, AI_INFO),
-    ) : null,
+      h('button', { class: 'link danger', type: 'button', onclick: () => { setConsent('no'); rerender(); } }, 'Einwilligung zurückziehen'),
+    ),
   );
 }
 
@@ -197,17 +191,30 @@ function sideSelect(value: Side | undefined, onChange: (v: Side | undefined) => 
     h('option', { value: 'left', selected: value === 'left' }, 'links'));
 }
 
-const AI_INFO = 'Pro gehaltener Haltung geht ein einzelnes Standbild verschlüsselt an unseren Server und von dort an den KI-Dienst Anthropic (Claude). Das Video selbst, Namen oder Konten werden nicht übermittelt. Wir speichern die Bilder nicht; Anthropic verwendet sie nicht zum Training und löscht sie nach spätestens 30 Tagen. Jederzeit hier wieder ausschaltbar.';
+const AI_INFO = 'Pro gehaltener Haltung geht ein einzelnes Standbild verschlüsselt an unseren Server und von dort an den KI-Dienst Anthropic (Claude). Das Video selbst, Namen oder Konten werden nicht übermittelt. Wir speichern die Bilder nicht; Anthropic verwendet sie nicht zum Training und löscht sie nach spätestens 30 Tagen. Die Einwilligung lässt sich jederzeit unter „Einstellungen“ zurückziehen.';
 
-/** One-time, global consent for the cloud recognition. Asked only when it matters. */
-function consentBox(): HTMLElement | null {
-  if (!aiAvailable() || getConsent() !== null) return null;
-  return h('div', { class: 'card consent stack-s' },
-    h('strong', {}, 'Genauer erkennen mit KI?'),
-    h('p', { class: 'small' }, AI_INFO),
-    h('div', { class: 'row' },
-      h('button', { class: 'btn primary', type: 'button', onclick: () => { setConsent('yes'); rerender(); } }, 'Ja, KI verwenden'),
-      h('button', { class: 'btn', type: 'button', onclick: () => { setConsent('no'); rerender(); } }, 'Nein, nur lokal'),
+/**
+ * The app needs the AI to recognise poses, so it starts with a one-time,
+ * global consent. Without it (or before the server is set up) it stops here.
+ */
+function renderGate(): HTMLElement {
+  const declined = getConsent() === 'no';
+  return h('div', { class: 'stack' },
+    h('section', { class: 'stack-s' },
+      h('h1', {}, 'Wie gut sitzt deine Haltung?'),
+      h('p', {}, 'Filme deine Yogapraxis von vorne und/oder von der Seite. Eine KI erkennt jede gehaltene Haltung, die App vergleicht Winkel und Positionen mit den Ausrichtungsregeln einer Schule und zeigt dir, was passt und was du korrigieren könntest.'),
     ),
+    !aiAvailable()
+      ? h('p', { class: 'notice' }, 'Die KI-Erkennung wird gerade eingerichtet. Bitte schau bald wieder vorbei.')
+      : h('div', { class: 'card consent stack-s' },
+          h('strong', {}, 'Einwilligung zur KI-Erkennung'),
+          h('p', { class: 'small' }, AI_INFO),
+          declined ? h('p', { class: 'notice' }, 'Ohne diese Einwilligung kann die App deine Haltungen nicht erkennen und nicht auswerten.') : null,
+          h('div', { class: 'row' },
+            h('button', { class: 'btn primary', type: 'button', onclick: () => { setConsent('yes'); rerender(); } }, 'Einverstanden'),
+            declined ? null : h('button', { class: 'btn', type: 'button', onclick: () => { setConsent('no'); rerender(); } }, 'Nein danke'),
+          ),
+        ),
+    h('p', { class: 'muted small' }, 'Diese App ersetzt keine Lehrerin und keinen Lehrer und keine ärztliche Beratung. Bei Schmerzen oder Beschwerden höre auf und frage eine Fachperson.'),
   );
 }

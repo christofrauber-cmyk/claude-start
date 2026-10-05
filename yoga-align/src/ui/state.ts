@@ -41,9 +41,10 @@ export interface ReviewItem {
   side?: Side;
   /** Shortlist to tap on, best first. */
   options: string[];
-  /** Where the preselection came from, and whether the user should look at it. */
-  source: 'ai' | 'local';
+  /** The user should look at it (low AI confidence). */
   unsure: boolean;
+  /** The AI gave no answer for this hold. */
+  failed?: boolean;
 }
 
 export interface AppState {
@@ -64,7 +65,7 @@ export interface AppState {
   /** Auto mode: holds to confirm, and the video they come from. */
   review: ReviewItem[] | null;
   reviewView: ViewName | null;
-  /** Auto mode: the AI could not be reached, local suggestions were used. */
+  /** Auto mode: the AI gave no answer for some holds. */
   aiFailed: boolean;
 }
 

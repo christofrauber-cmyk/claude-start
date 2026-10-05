@@ -1,5 +1,5 @@
-// Auto mode: one card per detected hold. The preselected pose comes from the
-// AI (if allowed) or from the local shape comparison; one tap changes it.
+// Auto mode: one card per detected hold. The AI preselects the pose; one tap
+// changes it.
 import { fmtTime, h } from './dom';
 import { go, rerender, state, type ReviewItem } from './state';
 import { POSES, POSE_BY_ID } from '../data/poses';
@@ -15,13 +15,15 @@ function card(it: ReviewItem, n: number): HTMLElement {
     type: 'button', class: 'chip' + (it.poseId === id ? ' on' : ''), 'aria-pressed': String(it.poseId === id), onclick: () => pick(id),
   }, POSE_BY_ID[id]?.nameDe ?? id);
 
-  const status = it.poseId === null
-    ? h('span', { class: 'tag' }, 'wird übersprungen')
-    : it.unsure
-      ? h('span', { class: 'tag warn' }, 'bitte prüfen')
-      : h('span', { class: 'tag ok' }, it.source === 'ai' ? 'KI: sicher' : 'bestätigt');
+  const status = it.failed && it.poseId === null
+    ? h('span', { class: 'tag warn' }, 'nicht erkannt – bitte wählen')
+    : it.poseId === null
+      ? h('span', { class: 'tag' }, 'wird übersprungen')
+      : it.unsure
+        ? h('span', { class: 'tag warn' }, 'bitte prüfen')
+        : h('span', { class: 'tag ok' }, 'KI: sicher');
 
-  return h('li', { class: 'card review' + (it.unsure && it.poseId ? ' unsure' : '') + (it.poseId === null ? ' skipped' : '') },
+  return h('li', { class: 'card review' + ((it.unsure && it.poseId) || (it.failed && !it.poseId) ? ' unsure' : '') + (it.poseId === null ? ' skipped' : '') },
     h('img', { src: it.image, alt: `Standbild bei ${fmtTime(it.t)}`, class: 'still' }),
     h('div', { class: 'stack-s grow' },
       h('div', {},
@@ -85,15 +87,12 @@ function confirm(): void {
 export function renderReview(): HTMLElement {
   const items = state.review ?? [];
   const open = items.filter((it) => it.unsure && it.poseId).length;
-  const usedAi = items.some((it) => it.source === 'ai');
   return h('div', { class: 'stack' },
     h('button', { class: 'link back', type: 'button', onclick: () => go('record') }, '← Zurück'),
     h('section', { class: 'stack-s' },
       h('h1', {}, 'Erkannte Haltungen'),
-      h('p', {}, usedAi
-        ? `Die KI hat ${items.length} gehaltene Haltungen erkannt. Stimmt etwas nicht, tippe die richtige an.`
-        : `Die App hat ${items.length} gehaltene Haltungen gefunden und schlägt pro Haltung die ähnlichsten vor. Tippe jeweils die richtige an.`),
-      state.aiFailed ? h('p', { class: 'notice' }, 'Die KI-Erkennung war nicht (vollständig) erreichbar. Wo sie fehlte, stehen die lokalen Vorschläge da – bitte kurz prüfen.') : null,
+      h('p', {}, `Die KI hat ${items.length} gehaltene Haltungen erkannt. Stimmt etwas nicht, tippe die richtige an.`),
+      state.aiFailed ? h('p', { class: 'notice' }, 'Bei einzelnen Haltungen kam keine Antwort der KI. Bitte dort die Haltung aus der Liste wählen.') : null,
       open ? h('p', { class: 'muted' }, `${open} ${open === 1 ? 'Haltung ist' : 'Haltungen sind'} mit „bitte prüfen“ markiert.`) : null,
     ),
     h('ol', { class: 'list review-list' }, items.map((it, i) => card(it, i + 1))),
