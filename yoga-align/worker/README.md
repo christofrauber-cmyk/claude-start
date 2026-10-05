@@ -19,4 +19,4 @@ npx wrangler login
 npx wrangler secret put ANTHROPIC_API_KEY
 npx wrangler deploy
 ```
-Then build the app with `VITE_CLASSIFY_URL=https://yoga-pose-classifier.<account>.workers.dev` (GitHub: repository variable `VITE_CLASSIFY_URL`, used by `.github/workflows/pages.yml`). Without that variable the app offers no AI and stays fully local.
+Then build the app with `VITE_CLASSIFY_URL=https://yoga-pose-classifier.<account>.workers.dev` (GitHub: repository variable `VITE_CLASSIFY_URL`, used by `.github/workflows/pages.yml`). Without that variable the app stops at "KI-Erkennung wird eingerichtet" (AI consent is required, there is no local fallback).

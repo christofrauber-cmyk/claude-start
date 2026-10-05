@@ -35,3 +35,15 @@ See the end of `docs/review/judge-decisions.md`:
 ## Known limits
 - Full-screen overlay on real videos tested only through the demo script, not on a phone.
 - Krieger III from the front: skeleton unreliable.
+
+## Status 2026-10-05 (session 4): what is left is only for Christof
+App and Worker typecheck and build (`npm run build`, `wrangler deploy --dry-run`). Nothing more to code for Option A until these steps are done:
+
+1. **Anthropic key** for the eval: set `ANTHROPIC_API_KEY` in the environment, then `cd worker && npx tsx scripts/eval.ts <path to yoga-testvideos>`. Pick Haiku or Sonnet by the measured accuracy and cost, set `MODEL` in `worker/wrangler.toml`.
+2. **Cloudflare (free account):**
+   1. Sign up at dash.cloudflare.com (email only, no card).
+   2. `cd yoga-align/worker && npx wrangler login` (opens the browser, confirm).
+   3. `npx wrangler secret put ANTHROPIC_API_KEY` (paste the key).
+   4. `npx wrangler deploy`, which prints `https://yoga-pose-classifier.<account>.workers.dev`.
+3. **GitHub:** repo Settings, Secrets and variables, Actions, Variables, new `VITE_CLASSIFY_URL` with that URL. Re-run the Pages workflow.
+4. Check the `ALLOWED_ORIGIN` in `worker/wrangler.toml` matches the Pages origin.
