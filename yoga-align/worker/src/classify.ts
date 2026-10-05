@@ -24,7 +24,7 @@ export const Answer = z.object({
   person_visible: z.boolean().describe('Is one person clearly visible, most of the body in the image?'),
   pose_id: z.enum([...POSE_IDS, 'unknown'] as [string, ...string[]]),
   confidence: z.number().describe('0..1, how sure you are that pose_id is right'),
-  alternatives: z.array(z.object({ pose_id: z.enum(POSE_IDS), confidence: z.number() }))
+  alternatives: z.array(z.object({ pose_id: z.enum([...POSE_IDS, 'unknown'] as [string, ...string[]]), confidence: z.number() }))
     .describe('Up to 3 other plausible poses, most likely first'),
 });
 export type Answer = z.infer<typeof Answer>;
@@ -85,8 +85,11 @@ export async function classifyPose(client: Anthropic, modelKey: ModelKey, images
     ...(modelKey === 'accurate' ? { output_config: { effort: 'low' as const, format: zodOutputFormat(Answer) } } : { output_config: { format: zodOutputFormat(Answer) } }),
     messages: [{ role: 'user', content }],
   });
+  // The model sometimes lists "unknown" as an alternative; that is no use to the user.
+  const parsed = res.stop_reason === 'refusal' ? null : res.parsed_output ?? null;
+  const answer = parsed && { ...parsed, alternatives: parsed.alternatives.filter((a) => a.pose_id !== 'unknown') };
   return {
-    answer: res.stop_reason === 'refusal' ? null : res.parsed_output ?? null,
+    answer,
     model,
     stop: res.stop_reason,
     usage: res.usage,

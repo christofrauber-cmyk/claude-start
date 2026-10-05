@@ -53,3 +53,19 @@ App and Worker typecheck and build (`npm run build`, `wrangler deploy --dry-run`
 - **Eval blocked:** `EVAL_ANTHROPIC_API_KEY` is not scoped to a workspace; the API answers 400 "must include the anthropic-workspace-id header". Needs either a workspace-scoped key (Console, API keys, pick a workspace) or the workspace ID. The same applies to the key for the Worker.
 - Test videos cloned from `yoga-testvideos`; ffmpeg is present. Once a usable key exists: `cd worker && npx tsx scripts/eval.ts /home/user/yoga-testvideos`.
 - Still open: `npx wrangler secret put ANTHROPIC_API_KEY`, then `VITE_CLASSIFY_URL` (value above) as repository variable and re-run Pages.
+
+## Status 2026-10-05 (session 6): eval done
+`EVAL_ANTHROPIC_API_KEY` works now (the workspace header problem is gone). 17 stills from both test videos, one image per call:
+
+| Model | Correct | In top 3 | Latency | Cost per pose (cache warm) |
+|---|---|---|---|---|
+| Haiku 4.5 | 11/17 (65 %) | 13/17 | ~2.2 s | $0.002 |
+| Sonnet 5.5 (effort low) | **16/17 (94 %)** | 17/17 | ~2.1 s | $0.005 |
+
+- **Decision: Sonnet 5.5** (`MODEL = "accurate"` in `wrangler.toml` is already right). Haiku misses the close variants (Virabhadrasana 2, Ardha Uttanasana, Janu Sirsasana front). Price difference is about 0.3 cent per pose, so accuracy wins.
+- The only Sonnet miss: side view, Anjaneyasana called Virabhadrasana 1 (the true answer is in its top 3). Front Anjaneyasana: Sonnet said `anjaneyasana_high`, which the case accepts.
+- The first call of a session writes the prompt cache and costs ~$0.028 (10k tokens catalogue). After that ~$0.005 as long as calls come within 5 minutes. A 10-pose practice is therefore ~$0.05-0.08.
+- Sonnet's confidence is low for correct answers (0.45-0.6 on uttanasana, ardha_uttanasana, janu_sirsasana). Do not use a hard threshold on `confidence` in the review screen; the one-tap correction stays the safety net.
+- Fix: the model sometimes lists `unknown` in `alternatives`, which crashed the parse. Schema now allows it and `classifyPose` filters it out.
+
+Still open for Christof: `npx wrangler secret put ANTHROPIC_API_KEY` (a **workspace-scoped** key, not the unscoped eval key), then repo variable `VITE_CLASSIFY_URL` and a Pages re-run.
