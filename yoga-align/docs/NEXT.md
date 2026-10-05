@@ -47,3 +47,9 @@ App and Worker typecheck and build (`npm run build`, `wrangler deploy --dry-run`
    4. `npx wrangler deploy`, which prints `https://yoga-pose-classifier.<account>.workers.dev`.
 3. **GitHub:** repo Settings, Secrets and variables, Actions, Variables, new `VITE_CLASSIFY_URL` with that URL. Re-run the Pages workflow.
 4. Check the `ALLOWED_ORIGIN` in `worker/wrangler.toml` matches the Pages origin.
+
+## Status 2026-10-05 (session 5)
+- **Worker deployed** to `https://yoga-pose-classifier.christof-rauber.workers.dev` (Cloudflare account verified, `MODEL = "accurate"`, origins as in `wrangler.toml`). The secret `ANTHROPIC_API_KEY` is **not** set yet, so `/` cannot classify. The sandbox proxy blocks `*.workers.dev`, so the live endpoint was not smoke-tested from here.
+- **Eval blocked:** `EVAL_ANTHROPIC_API_KEY` is not scoped to a workspace; the API answers 400 "must include the anthropic-workspace-id header". Needs either a workspace-scoped key (Console, API keys, pick a workspace) or the workspace ID. The same applies to the key for the Worker.
+- Test videos cloned from `yoga-testvideos`; ffmpeg is present. Once a usable key exists: `cd worker && npx tsx scripts/eval.ts /home/user/yoga-testvideos`.
+- Still open: `npx wrangler secret put ANTHROPIC_API_KEY`, then `VITE_CLASSIFY_URL` (value above) as repository variable and re-run Pages.
