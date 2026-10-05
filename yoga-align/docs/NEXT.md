@@ -75,3 +75,6 @@ Cloudflare secret `ANTHROPIC_API_KEY` is set (Christof confirmed). Next: reposit
 
 ## Status 2026-10-05 (session 6, video loading)
 Christof got "Das Video konnte nicht geladen werden (Zeitüberschreitung)" on the .mov test video. The files are H.264 (not HEVC), so the codec message was misleading: `loadeddata` never fired. Likely cause on phones: a video element that is not in the page and never played loads nothing (iOS Safari). `loadVideo` in `src/ui/video.ts` now attaches the element hidden to the page, calls a short muted `play()` then `pause()` after `loadedmetadata`, accepts `loadeddata`/`canplay`, and removes the element on release. The timeout message now says "try again, then format". Tested: typecheck, 153 unit tests, WebM in desktop Chromium (loads, element removed on release). **Not tested on a real iPhone**; the sandbox Chromium has no H.264.
+
+## Status 2026-10-05 (session 6, live)
+Option A runs live: Worker secret and `VITE_CLASSIFY_URL` are set, Christof confirmed the video loads and the app works with the front video on the phone and the side video on the computer. Open: judge recognition quality and real cost in the live app; spending limit in the Anthropic Console workspace; expert questions (see above); full-screen overlay on a phone.
