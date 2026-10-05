@@ -72,3 +72,6 @@ Still open for Christof: `npx wrangler secret put ANTHROPIC_API_KEY` (a **worksp
 
 ## Status 2026-10-05 (session 6, later)
 Cloudflare secret `ANTHROPIC_API_KEY` is set (Christof confirmed). Next: repository variable `VITE_CLASSIFY_URL`, then a Pages build (push to this branch; the "Run workflow" button does not show because the workflow file is not on the default branch), then the first real end-to-end test in the live app.
+
+## Status 2026-10-05 (session 6, video loading)
+Christof got "Das Video konnte nicht geladen werden (Zeitüberschreitung)" on the .mov test video. The files are H.264 (not HEVC), so the codec message was misleading: `loadeddata` never fired. Likely cause on phones: a video element that is not in the page and never played loads nothing (iOS Safari). `loadVideo` in `src/ui/video.ts` now attaches the element hidden to the page, calls a short muted `play()` then `pause()` after `loadedmetadata`, accepts `loadeddata`/`canplay`, and removes the element on release. The timeout message now says "try again, then format". Tested: typecheck, 153 unit tests, WebM in desktop Chromium (loads, element removed on release). **Not tested on a real iPhone**; the sandbox Chromium has no H.264.

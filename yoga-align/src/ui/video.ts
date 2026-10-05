@@ -41,6 +41,14 @@ const UNSUPPORTED =
   'Bitte als MP4/H.264 exportieren: am iPhone unter Einstellungen › Kamera › Formate › „Kompatibel“ aufnehmen, ' +
   'oder das Video über Fotos bzw. QuickTime als MP4 exportieren, und dann erneut hochladen.';
 
+/** Removes a hidden video element and frees its decoder. */
+function disposeVideo(v: HTMLVideoElement): void {
+  v.pause();
+  v.removeAttribute('src');
+  v.load();
+  v.remove();
+}
+
 function loadVideo(src: string): Promise<HTMLVideoElement> {
   return new Promise((resolve, reject) => {
     const v = document.createElement('video');
@@ -48,16 +56,26 @@ function loadVideo(src: string): Promise<HTMLVideoElement> {
     v.playsInline = true;
     v.preload = 'auto';
     v.crossOrigin = 'anonymous';
-    const timer = setTimeout(() => reject(new Error('Das Video konnte nicht geladen werden (Zeitüberschreitung). ' + UNSUPPORTED)), 30000);
-    v.onloadeddata = () => {
+    // Mobile browsers (iOS Safari above all) load nothing for a video that is not in the page and never played.
+    // A hidden element in the page plus a short muted play() makes them fetch and decode the first frames.
+    v.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none';
+    document.body.appendChild(v);
+    const fail = (msg: string) => { clearTimeout(timer); disposeVideo(v); reject(new Error(msg)); };
+    const timer = setTimeout(() => fail('Das Video konnte nicht geladen werden (Zeitüberschreitung). Bitte noch einmal versuchen. '
+      + 'Hilft das nicht, liegt es am Format:\n' + UNSUPPORTED), 30000);
+    const ready = () => {
+      if (v.readyState < 2) return;
       clearTimeout(timer);
-      if (!v.videoWidth || !v.videoHeight) reject(new Error(UNSUPPORTED));
+      if (!v.videoWidth || !v.videoHeight) fail(UNSUPPORTED);
       else resolve(v);
     };
-    v.onerror = () => {
-      clearTimeout(timer);
-      reject(new Error(UNSUPPORTED));
+    v.onloadeddata = ready;
+    v.oncanplay = ready;
+    v.onloadedmetadata = () => {
+      if (v.readyState >= 2) return ready();
+      v.play().then(() => v.pause()).catch(() => undefined);
     };
+    v.onerror = () => fail(UNSUPPORTED);
     v.src = src;
     v.load();
   });
@@ -82,8 +100,9 @@ function fitSize(w: number, h: number, edge: number): [number, number] {
 export async function extractPoses(file: File, onProgress: (fraction: number) => void): Promise<Extraction> {
   const url = URL.createObjectURL(file);
   let landmarker: PoseLandmarker | null = null;
+  let loaded: HTMLVideoElement | null = null;
   try {
-    const video = await loadVideo(url);
+    const video = loaded = await loadVideo(url);
     const duration = video.duration;
     if (!isFinite(duration) || duration <= 0) throw new Error('Die Videolänge ist unbekannt – bitte ein anderes Format versuchen.');
     const width = video.videoWidth, height = video.videoHeight;
@@ -116,6 +135,7 @@ export async function extractPoses(file: File, onProgress: (fraction: number) =>
     return { width, height, duration, frames };
   } finally {
     landmarker?.close();
+    if (loaded) disposeVideo(loaded);
     URL.revokeObjectURL(url);
   }
 }
@@ -137,6 +157,7 @@ function urlFor(src: File | string): string {
 export function releaseVideo(file: File): void {
   const u = urls.get(file);
   if (!u) return;
+  videos.get(u)?.then(disposeVideo, () => undefined);
   URL.revokeObjectURL(u);
   urls.delete(file);
   videos.delete(u);
