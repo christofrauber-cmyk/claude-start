@@ -69,3 +69,6 @@ App and Worker typecheck and build (`npm run build`, `wrangler deploy --dry-run`
 - Fix: the model sometimes lists `unknown` in `alternatives`, which crashed the parse. Schema now allows it and `classifyPose` filters it out.
 
 Still open for Christof: `npx wrangler secret put ANTHROPIC_API_KEY` (a **workspace-scoped** key, not the unscoped eval key), then repo variable `VITE_CLASSIFY_URL` and a Pages re-run.
+
+## Status 2026-10-05 (session 6, later)
+Cloudflare secret `ANTHROPIC_API_KEY` is set (Christof confirmed). Next: repository variable `VITE_CLASSIFY_URL`, then a Pages build (push to this branch; the "Run workflow" button does not show because the workflow file is not on the default branch), then the first real end-to-end test in the live app.
