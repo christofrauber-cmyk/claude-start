@@ -236,9 +236,9 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'marichyasana_1.shin_vertical', view: 'side', measure: tilt('trail_knee', 'trail_ankle', 'vertical'),
-      range: [0, 25], margin: 10, label: 'Schienbein senkrecht',
-      cueBelow: 'Schienbein senkrecht halten.',
-      cueAbove: 'Schienbein senkrecht stellen: Fuß flach, Ferse unter das Knie.',
+      range: [0, 20], margin: 10, label: 'Schienbein senkrecht',
+      cueBelow: 'Schienbein senkrecht: Ferse direkt unter das Knie stellen.',
+      cueAbove: 'Schienbein senkrecht: Ferse direkt unter das Knie stellen.',
       why: 'Der Fuß steht flach unter dem Knie; so kann der Oberschenkel die Rumpfbeuge begleiten.', weight: 1,
     },
     {
@@ -273,12 +273,6 @@ const rules: Record<string, Rule[]> = {
       cueAbove: 'Schultern genau über die Handgelenke bringen.',
       why: 'Die senkrechten Arme tragen den Rumpf, ohne dass der Schultergürtel einsinkt.', weight: 3,
     },
-    ...armsStraight(
-      'marjaryasana', [165, 180], 2,
-      'Arme ganz strecken, Hände fest in den Boden.',
-      'Ellbogen nicht überstrecken, Oberarmmuskeln aktiv.',
-      'Fest in den Boden gedrückte, gestreckte Arme machen die Rundung des Rückens frei.',
-    ),
   ],
 
   // ---------------------------------------------------------------- Bitilasana
@@ -297,12 +291,6 @@ const rules: Record<string, Rule[]> = {
       cueAbove: 'Schultern genau über die Handgelenke bringen.',
       why: 'Die senkrechten Arme tragen den Rumpf, ohne dass der Schultergürtel einsinkt.', weight: 3,
     },
-    ...armsStraight(
-      'bitilasana', [165, 180], 2,
-      'Arme ganz strecken, Hände fest in den Boden.',
-      'Ellbogen nicht überstrecken, Oberarmmuskeln aktiv.',
-      'Fest in den Boden gedrückte, gestreckte Arme tragen die Brust, die sich nach vorn hebt.',
-    ),
   ],
 
   // ----------------------------------------------------------------- Ustrasana
@@ -314,17 +302,11 @@ const rules: Record<string, Rule[]> = {
       cueAbove: 'Hüfte nach vorn über die Knie schieben: Oberschenkel senkrecht, Gesäß fest.',
       why: 'Die Oberschenkel stehen senkrecht, damit der Bogen aus dem ganzen Rücken kommt und nicht nur aus dem unteren.', weight: 3,
     },
-    ...armsStraight(
-      'ustrasana', [160, 180], 2,
-      'Arme ganz strecken, Handflächen auf die Fersen.',
-      'Ellbogen nicht überstrecken, Arme aktiv.',
-      'Die langen, aktiven Arme heben den Brustkorb nach oben und hinten.',
-    ),
     {
       id: 'ustrasana.hip_extension', view: 'side', measure: angle('mid_knee', 'mid_hip', 'mid_shoulder'),
       range: [130, 175], margin: 12, label: 'Rückbeuge',
-      cueBelow: 'Rückbeuge nicht übertreiben: Brustbein heben, Hüfte vorschieben.',
-      cueAbove: 'Brustbein heben und nach hinten öffnen, Hüfte nach vorn schieben.',
+      cueBelow: 'Becken nach vorn schieben, Brustbein heben.',
+      cueAbove: 'Becken nach vorn schieben, Brustbein heben.',
       why: 'Die Hüfte schiebt nach vorn, der Brustkorb folgt in einem großen Bogen nach hinten.', weight: 2,
     },
   ],
@@ -382,14 +364,14 @@ const rules: Record<string, Rule[]> = {
     {
       id: 'purvottanasana.body_line', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'mid_ankle'),
       range: [160, 180], margin: 10, label: 'Körperlinie',
-      cueBelow: 'Becken höher heben: Schultern, Hüfte und Fersen in eine Linie.',
+      cueBelow: 'Becken heben, bis Schultern, Hüfte und Fersen eine Linie bilden.',
       cueAbove: 'Becken nicht überstrecken, Gesäß fest, Linie gerade halten.',
       why: 'Der Körper bildet eine lange, gerade schräge Linie von den Schultern bis zu den Füßen.', weight: 3,
     },
     {
       id: 'purvottanasana.legs_straight', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
-      range: [165, 180], label: 'Beine',
-      cueBelow: 'Knie strecken: Oberschenkel hochziehen, Fersen in den Boden.',
+      range: [160, 180], margin: 12, label: 'Beine',
+      cueBelow: 'Beine strecken: Fersen Richtung Boden schieben, Oberschenkel fest.',
       cueAbove: 'Knie nicht überstrecken.',
       why: 'Fest gestreckte Beine halten das Becken oben und entlasten Handgelenke und Schultern.', weight: 2,
     },
@@ -403,13 +385,6 @@ const rules: Record<string, Rule[]> = {
       cueBelow: 'Oberschenkel senkrecht halten.',
       cueAbove: 'Hüfte nach vorn über die Knie schieben, bevor der Rücken sich zurückbeugt.',
       why: 'Die Hüfte bleibt vorn, so verteilt sich der tiefe Bogen auf den ganzen Rücken.', weight: 3,
-    },
-    {
-      id: 'kapotasana.deep_backbend', view: 'side', measure: angle('mid_knee', 'mid_hip', 'mid_shoulder'),
-      range: [70, 175], margin: 15, label: 'Tiefe Rückbeuge',
-      cueBelow: 'Nicht tiefer zurück: Brustbein heben, Hüfte vorn halten.',
-      cueAbove: 'Brustbein heben, Hüfte vorn halten: die Rückbeuge langsam und ohne Druck aufbauen.',
-      why: 'Die Rückbeuge verteilt sich auf den ganzen Rücken; die Regel bremst nur zu tiefes Zurückfallen und treibt niemanden tiefer.', weight: 1,
     },
   ],
 
@@ -534,16 +509,16 @@ const rules: Record<string, Rule[]> = {
   makarasana: [
     {
       id: 'makarasana.trunk_flat', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),
-      range: [0, 15], margin: 8, label: 'Rumpf flach',
+      range: [0, 20], margin: 8, label: 'Rumpf flach',
       cueBelow: 'Rumpf flach halten.',
       cueAbove: 'Brust zum Boden sinken lassen, Schultern entspannen.',
-      why: 'Der Rumpf ruht flach am Boden; so entspannt sich der ganze Rücken.', weight: 2,
+      why: 'Der Rumpf ruht flach am Boden; so entspannt sich der ganze Rücken.', weight: 1,
     },
     {
       id: 'makarasana.legs_on_floor', view: 'side', measure: tilt('mid_hip', 'mid_ankle', 'horizontal'),
-      range: [0, 15], margin: 8, label: 'Beine am Boden',
+      range: [0, 25], margin: 8, label: 'Beine am Boden',
       cueBelow: 'Beine am Boden lassen.',
-      cueAbove: 'Beine ganz am Boden ablegen und entspannen.',
+      cueAbove: 'Beine locker lang ablegen.',
       why: 'Die Beine liegen schwer und entspannt am Boden.', weight: 1,
     },
   ],

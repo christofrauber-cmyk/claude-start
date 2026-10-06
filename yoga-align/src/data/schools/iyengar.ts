@@ -100,7 +100,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'tadasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 5], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüftknochen auf gleiche Höhe, Gewicht gleichmäßig auf beide Beine.',
       why: 'Ein schiefes Becken verrät ungleiche Beinarbeit – Tadasana ist die Grundlage aller Haltungen.', weight: 3,
@@ -202,7 +202,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'utkatasana.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 6], label: 'Rumpf seitlich',
+      range: [0, 10], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Rumpf mittig halten: nicht zur Seite kippen, Brustbein über das Becken.',
       why: 'Eine symmetrische Haltung zeigt gleiche Arbeit in beiden Beinen.', weight: 2,
@@ -234,7 +234,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'vrksasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 6], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: die Hüfte des angehobenen Beins nicht hochziehen, beide Hüften gleich hoch.',
       why: 'Ein waagrechtes Becken zeigt, dass das Standbein sauber arbeitet und das Knie außen frei öffnet.', weight: 3,
@@ -463,14 +463,14 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'virabhadrasana_1.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch und frontal nach vorn drehen.',
       why: 'Das Becken blickt gerade nach vorn; hierin liegt die Schwierigkeit von Virabhadrasana I.', weight: 3,
     },
     {
       id: 'virabhadrasana_1.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 6], label: 'Rumpf seitlich',
+      range: [0, 10], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf mittig halten.',
       cueAbove: 'Rumpf mittig über das Becken ziehen: nicht zur Seite kippen.',
       why: 'Der Rumpf steigt mittig aus dem Becken.', weight: 2,
@@ -636,7 +636,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'uttanasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 6], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch, Gewicht gleichmäßig auf beide Füße.',
       why: 'Das Becken beugt symmetrisch aus den Hüftgelenken.', weight: 2,
@@ -703,7 +703,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'adho_mukha_svanasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Sitzbeine gleich hoch zur Decke.',
       why: 'Ein waagrechtes Becken zeigt gleichmäßige Beinarbeit.', weight: 2,
@@ -919,7 +919,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'setu_bandha_sarvangasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 6], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüften gleich hoch heben.',
       why: 'Das Becken hebt symmetrisch; ungleiche Hebung verrät ungleiche Beinarbeit.', weight: 2,
@@ -972,7 +972,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'urdhva_hastasana.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 6], label: 'Rumpf seitlich',
+      range: [0, 10], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Rumpf nicht zur Seite kippen: Brustbein mittig über das Becken heben.',
       why: 'Die Mittelachse steht senkrecht, damit die Wirbelsäule gleichmäßig lang wird.', weight: 3,
@@ -1039,7 +1039,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'ardha_uttanasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 6], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch, Gewicht gleichmäßig auf beide Füße.',
       why: 'Das Becken beugt symmetrisch aus den Hüftgelenken.', weight: 2,
@@ -1106,14 +1106,14 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'anjaneyasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch und nach vorn gerichtet.',
       why: 'Das Becken blickt gerade nach vorn und sinkt gleichmäßig ab.', weight: 2,
     },
     {
       id: 'anjaneyasana.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 6], label: 'Rumpf seitlich',
+      range: [0, 10], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf mittig halten.',
       cueAbove: 'Rumpf mittig über das Becken ziehen: nicht zur Seite kippen.',
       why: 'Der Rumpf steigt mittig aus dem Becken.', weight: 2,
@@ -1166,14 +1166,14 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'anjaneyasana_high.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüftknochen gleich hoch und nach vorn gerichtet.',
       why: 'Das Becken blickt gerade nach vorn, die hintere Hüfte zieht nach vorn.', weight: 2,
     },
     {
       id: 'anjaneyasana_high.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 6], label: 'Rumpf seitlich',
+      range: [0, 10], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf mittig halten.',
       cueAbove: 'Rumpf mittig über das Becken ziehen: nicht zur Seite kippen.',
       why: 'Der Rumpf steigt mittig aus dem Becken.', weight: 2,
@@ -1226,7 +1226,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'virabhadrasana_3.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: die Hüfte des angehobenen Beins nach unten drehen, beide Hüftknochen gleich hoch.',
       why: 'Ein waagrechtes Becken zeigt, dass das angehobene Bein aus der Hüfte nach hinten streckt und nicht nach außen kippt.', weight: 3,
@@ -1286,7 +1286,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'janu_sirsasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Beide Sitzbeine gleichmäßig in den Boden drücken, Becken ausgleichen.',
       why: 'Beide Sitzbeine bleiben gleich schwer am Boden, auch wenn ein Bein gebeugt ist.', weight: 2,

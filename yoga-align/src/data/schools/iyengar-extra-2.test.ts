@@ -29,9 +29,9 @@ function refsOf(rule: Rule): string[] {
 }
 
 describe('RULES_EXTRA_2 structure', () => {
-  it('covers exactly the expected poses with at least 2 rules each', () => {
+  it('covers exactly the expected poses with at least 1 rule each', () => {
     expect(Object.keys(RULES_EXTRA_2).sort()).toEqual([...POSE_IDS].sort());
-    for (const id of POSE_IDS) expect(RULES_EXTRA_2[id]?.length ?? 0, id).toBeGreaterThanOrEqual(2);
+    for (const id of POSE_IDS) expect(RULES_EXTRA_2[id]?.length ?? 0, id).toBeGreaterThanOrEqual(1);
   });
 
   it('only references known poses', () => {

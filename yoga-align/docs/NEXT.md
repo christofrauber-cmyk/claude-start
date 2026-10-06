@@ -78,3 +78,6 @@ Christof got "Das Video konnte nicht geladen werden (Zeitüberschreitung)" on th
 
 ## Status 2026-10-05 (session 6, live)
 Option A runs live: Worker secret and `VITE_CLASSIFY_URL` are set, Christof confirmed the video loads and the app works with the front video on the phone and the side video on the computer. Open: judge recognition quality and real cost in the live app; spending limit in the Anthropic Console workspace; expert questions (see above); full-screen overlay on a phone.
+
+## Status 2026-10-06 (session 6): round-2 Iyengar rules implemented
+See `docs/review/round2-implementation.md` (answers to the code questions, deviations, the 9 open expert questions). 278 rules in 79 extra poses, 157 tests green, build clean. Core change: `mid_elbow` midpoint. Not yet seen on a real video: the new rules were only tested with synthetic frames, so run the two test videos once and look at the review screen.

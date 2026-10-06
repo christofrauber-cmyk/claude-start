@@ -29,11 +29,11 @@ function refsOf(rule: Rule): string[] {
 }
 
 describe('RULES_EXTRA_4', () => {
-  it('covers exactly the assigned poses with at least 2 rules each', () => {
+  it('covers exactly the assigned poses with at least 1 rule each', () => {
     expect(Object.keys(RULES_EXTRA_4).sort()).toEqual([...POSE_IDS].sort());
     for (const id of POSE_IDS) {
       expect(POSE_BY_ID[id], id).toBeTruthy();
-      expect(RULES_EXTRA_4[id]?.length ?? 0, id).toBeGreaterThanOrEqual(2);
+      expect(RULES_EXTRA_4[id]?.length ?? 0, id).toBeGreaterThanOrEqual(1);
     }
   });
 

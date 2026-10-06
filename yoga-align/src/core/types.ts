@@ -32,7 +32,7 @@ export type PoseFrame = Landmark[];
  * "Warrior II right", i.e. the bent front leg):
  *   lead_knee, trail_ankle, ...
  * Virtual midpoints:
- *   mid_hip, mid_shoulder, mid_ankle, mid_knee, mid_wrist, mid_ear
+ *   mid_hip, mid_shoulder, mid_ankle, mid_knee, mid_wrist, mid_elbow, mid_ear
  */
 export type JointRef = string;
 

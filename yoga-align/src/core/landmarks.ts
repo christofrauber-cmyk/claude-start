@@ -39,6 +39,7 @@ const MIDPOINTS: Record<string, [string, string]> = {
   mid_ankle: ['left_ankle', 'right_ankle'],
   mid_knee: ['left_knee', 'right_knee'],
   mid_wrist: ['left_wrist', 'right_wrist'],
+  mid_elbow: ['left_elbow', 'right_elbow'],
   mid_ear: ['left_ear', 'right_ear'],
   mid_heel: ['left_heel', 'right_heel'],
 };

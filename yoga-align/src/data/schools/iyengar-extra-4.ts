@@ -119,8 +119,8 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
       id: 'adho_mukha_vrksasana.trunk_vertical', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
       range: [0, 18], margin: 10, label: 'Rumpf',
       cueBelow: 'Rumpf senkrecht halten.',
-      cueAbove: 'Rumpf aufrichten: Brustbein zu den Händen, nicht ins Hohlkreuz kippen.',
-      why: 'Ein senkrechter Rumpf zeigt, dass Schultergürtel und Becken übereinander stehen.', weight: 2,
+      cueAbove: 'Rumpf lang strecken: Rippen einziehen, Hüfte über die Schultern.',
+      why: 'Ein senkrechter Rumpf zeigt, dass Schultergürtel und Becken übereinander stehen.', weight: 1,
     },
   ],
 
@@ -206,9 +206,9 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
     },
     {
       id: 'bakasana.shoulders_over_wrists', view: 'side', measure: offset('mid_shoulder', 'mid_wrist', 'x', 'forward'),
-      range: [-0.1, 0.4], margin: 0.12, label: 'Schulter über Handgelenk',
-      cueBelow: 'Schultern weiter nach vorn über die Hände bringen.',
-      cueAbove: 'Nicht zu weit nach vorn fallen: Schultern nur leicht vor die Hände.',
+      range: [-0.1, 0.4], margin: 0.1, label: 'Schulter über Handgelenk',
+      cueBelow: 'Schultern weiter nach vorn über die Handgelenke bringen; ein Kissen vor den Kopf legen.',
+      cueAbove: 'Nicht zu weit nach vorn kippen: Gewicht etwas zurück, Blick nach vorn.',
       why: 'Der Schwerpunkt wandert über die Hände, damit die Füße sich lösen können.', weight: 2,
     },
   ],
@@ -216,25 +216,18 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
   // -------------------------------------------------------- Parsva Bakasana (lead = Seite der Knie)
   parsva_bakasana: [
     {
+      id: 'parsva_bakasana.shoulders_over_wrists', view: 'side', measure: offset('mid_shoulder', 'mid_wrist', 'x', 'forward'),
+      range: [-0.1, 0.5], margin: 0.1, label: 'Schulter über Handgelenk',
+      cueBelow: 'Schultern weiter nach vorn über die Hände bringen.',
+      cueAbove: 'Nicht zu weit vorkippen: Gewicht etwas zurück.',
+      why: 'Der Schwerpunkt wandert über die Hände, damit sich die Füße lösen können; gebeugte Ellbogen sind dabei in Ordnung.', weight: 2,
+    },
+    {
       id: 'parsva_bakasana.lead_leg_folded', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
       range: [15, 80], margin: 10, label: 'Vorderes Bein',
       cueBelow: 'Knie etwas weiter öffnen.',
       cueAbove: 'Ferse näher zum Gesäß ziehen, Knie fest gegen den Oberarm.',
       why: 'Die zusammengefalteten Beine bleiben kompakt und lassen sich über den Arm tragen.', weight: 1,
-    },
-    {
-      id: 'parsva_bakasana.arms_straight_left', view: 'side', measure: angle('left_shoulder', 'left_elbow', 'left_wrist'),
-      range: [145, 180], margin: 12, label: 'Arm links',
-      cueBelow: 'Arme strecken: Hände in den Boden drücken, Schulterblätter breit.',
-      cueAbove: 'Ellbogen nicht überstrecken.',
-      why: 'Die Arme tragen das Gewicht; gestreckte, aktive Arme heben Becken und Beine vom Boden.', weight: 2,
-    },
-    {
-      id: 'parsva_bakasana.arms_straight_right', view: 'side', measure: angle('right_shoulder', 'right_elbow', 'right_wrist'),
-      range: [145, 180], margin: 12, label: 'Arm rechts',
-      cueBelow: 'Arme strecken: Hände in den Boden drücken, Schulterblätter breit.',
-      cueAbove: 'Ellbogen nicht überstrecken.',
-      why: 'Die Arme tragen das Gewicht; gestreckte, aktive Arme heben Becken und Beine vom Boden.', weight: 2,
     },
   ],
 
@@ -273,7 +266,7 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
   // -------------------------------------------------------- Astavakrasana (lead = Seite der Beine)
   astavakrasana: [
     {
-      id: 'astavakrasana.legs_straight', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
+      id: 'astavakrasana.legs_straight', view: 'front', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
       range: [150, 180], margin: 12, label: 'Beine',
       cueBelow: 'Beine strecken: Fersen wegschieben.',
       cueAbove: 'Knie nicht überstrecken.',
@@ -309,7 +302,7 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
   // -------------------------------------------------------- Vasisthasana (lead = untere Hand / Stützarm)
   vasisthasana: [
     {
-      id: 'vasisthasana.support_arm_straight', view: 'front', measure: angle('lead_shoulder', 'lead_elbow', 'lead_wrist'),
+      id: 'vasisthasana.support_arm_straight', view: 'side', measure: angle('lead_shoulder', 'lead_elbow', 'lead_wrist'),
       range: [165, 180], label: 'Stützarm',
       cueBelow: 'Stützarm strecken: Hand in den Boden drücken, Ellbogen fest.',
       cueAbove: 'Ellbogen nicht überstrecken: Oberarm außen drehen, Schulter aktiv.',
@@ -326,15 +319,8 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
       id: 'vasisthasana.body_line', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'mid_ankle'),
       range: [165, 180], label: 'Körperlinie',
       cueBelow: 'Körper zu einer Linie strecken: Hüfte weder hängen lassen noch hochschieben.',
-      cueAbove: 'Hüfte nicht nach oben schieben: Körper lang wie ein Brett.',
+      cueAbove: 'Körper zu einer Linie strecken: Hüfte weder hängen lassen noch hochschieben.',
       why: 'Eine gerade Körperlinie verlangt aktive Beine und einen starken Rumpf.', weight: 3,
-    },
-    {
-      id: 'vasisthasana.legs_straight', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
-      range: [165, 180], label: 'Beine',
-      cueBelow: 'Beine strecken: Kniescheiben hoch, Fersen weg.',
-      cueAbove: 'Knie nicht überstrecken: Kniescheiben hoch.',
-      why: 'Die gestreckten Beine halten die Körperlinie; Knie, die sich beugen, lassen das Becken sinken.', weight: 2,
     },
     {
       id: 'vasisthasana.top_arm_vertical', view: 'front', measure: tilt('trail_wrist', 'trail_shoulder', 'vertical'),
@@ -351,20 +337,13 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
       id: 'phalakasana.body_line', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'mid_ankle'),
       range: [165, 180], label: 'Körperlinie',
       cueBelow: 'Körper zu einer Linie strecken: Hüfte weder hängen lassen noch hochschieben.',
-      cueAbove: 'Hüfte nicht hochschieben, Steißbein Richtung Fersen strecken.',
+      cueAbove: 'Körper zu einer Linie strecken: Hüfte weder hängen lassen noch hochschieben.',
       why: 'Der Körper bleibt ein gerades Brett; Bauch und Beine tragen die Linie.', weight: 3,
     },
     {
-      id: 'phalakasana.arms_straight_left', view: 'side', measure: angle('left_shoulder', 'left_elbow', 'left_wrist'),
-      range: [165, 180], label: 'Arme links',
-      cueBelow: 'Arme strecken: Ellbogen fest, Hände in den Boden drücken.',
-      cueAbove: 'Ellbogen nicht überstrecken: Oberarme außen drehen.',
-      why: 'Die gestreckten Arme tragen das Gewicht, ohne dass die Schultern einsinken.', weight: 2,
-    },
-    {
-      id: 'phalakasana.arms_straight_right', view: 'side', measure: angle('right_shoulder', 'right_elbow', 'right_wrist'),
-      range: [165, 180], label: 'Arme rechts',
-      cueBelow: 'Arme strecken: Ellbogen fest, Hände in den Boden drücken.',
+      id: 'phalakasana.arms_straight', view: 'side', measure: angle('mid_shoulder', 'mid_elbow', 'mid_wrist'),
+      range: [150, 180], margin: 12, label: 'Arme',
+      cueBelow: 'Arme strecken: Hände in den Boden drücken.',
       cueAbove: 'Ellbogen nicht überstrecken: Oberarme außen drehen.',
       why: 'Die gestreckten Arme tragen das Gewicht, ohne dass die Schultern einsinken.', weight: 2,
     },
@@ -422,8 +401,8 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
       id: 'mayurasana.body_line', view: 'side', measure: angle('mid_shoulder', 'mid_hip', 'mid_ankle'),
       range: [160, 180], label: 'Körperlinie',
       cueBelow: 'Körper zu einer Linie strecken: Hüfte weder hängen lassen noch hochschieben.',
-      cueAbove: 'Hüfte nicht hochschieben: Körper lang halten.',
-      why: 'Die gerade Linie zeigt, dass Bauch und Beine gleichmäßig arbeiten.', weight: 2,
+      cueAbove: 'Körper zu einer Linie strecken: Hüfte weder hängen lassen noch hochschieben.',
+      why: 'Die gerade Linie zeigt, dass Bauch und Beine gleichmäßig arbeiten.', weight: 1,
     },
     {
       id: 'mayurasana.legs_straight', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
@@ -480,8 +459,8 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
   // -------------------------------------------------------- Supta Baddha Konasana
   supta_baddha_konasana: [
     {
-      id: 'supta_baddha_konasana.knees_open', view: 'front', measure: offset('left_knee', 'right_knee', 'x', undefined, true),
-      range: [0.3, 2.0], margin: 0.15, label: 'Knieöffnung',
+      id: 'supta_baddha_konasana.knees_open', view: 'front', measure: angle('left_knee', 'mid_hip', 'right_knee'),
+      range: [60, 180], margin: 12, label: 'Knieöffnung',
       cueBelow: 'Knie nur so weit sinken lassen, wie es angenehm ist: Decken oder Blöcke unter die Knie legen.',
       cueAbove: 'Knie nicht zu weit auseinanderfallen lassen: Fußsohlen zusammen, mit Blöcken stützen.',
       why: 'Die Hüften öffnen sich durch das Gewicht der Beine, nicht durch Druck.', weight: 1,
@@ -516,14 +495,14 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
       range: [165, 180], label: 'Bein am Boden',
       cueBelow: 'Bein am Boden strecken: Oberschenkel in den Boden, Ferse weg.',
       cueAbove: 'Knie nicht durchdrücken, Kniescheibe nach oben ziehen.',
-      why: 'Das Bein am Boden verankert das Becken und hält die Hüften gerade.', weight: 3,
+      why: 'Das Bein am Boden verankert das Becken und hält die Hüften gerade.', weight: 2,
     },
     {
       id: 'supta_padangusthasana.floor_leg_flat', view: 'side', measure: tilt('trail_hip', 'trail_ankle', 'horizontal'),
       range: [0, 12], margin: 8, label: 'Bein am Boden flach',
       cueBelow: 'Bein am Boden halten.',
-      cueAbove: 'Bein am Boden ablegen: Fuß nicht anheben oder zur Seite kippen.',
-      why: 'Das liegende Bein bildet die ruhige Basis für die Dehnung.', weight: 2,
+      cueAbove: 'Das liegende Bein aktiv in den Boden drücken: Ferse lang, Oberschenkel fest.',
+      why: 'Das liegende Bein bildet die ruhige Basis für die Dehnung.', weight: 1,
     },
     {
       id: 'supta_padangusthasana.leg_raised', view: 'side', measure: angle('mid_shoulder', 'lead_hip', 'lead_knee'),
@@ -570,10 +549,10 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
     },
     {
       id: 'supta_virasana.thighs_on_floor', view: 'side', measure: tilt('mid_hip', 'mid_knee', 'horizontal'),
-      range: [0, 25], margin: 10, label: 'Oberschenkel',
+      range: [0, 30], margin: 10, label: 'Oberschenkel',
       cueBelow: 'Oberschenkel am Boden halten.',
-      cueAbove: 'Rumpf höher auf Polster legen, bis die Oberschenkel locker liegen: nichts erzwingen.',
-      why: 'Die Knie bleiben am Boden, damit die Dehnung in den Oberschenkeln und nicht im Rücken stattfindet.', weight: 2,
+      cueAbove: 'Nichts erzwingen: Polster oder Decken unter den Rücken, bis die Oberschenkel entspannt sinken.',
+      why: 'Die Knie bleiben am Boden, damit die Dehnung in den Oberschenkeln und nicht im Rücken stattfindet.', weight: 1,
     },
     {
       id: 'supta_virasana.trunk_reclined', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),

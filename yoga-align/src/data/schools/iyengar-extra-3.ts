@@ -100,14 +100,14 @@ function crossLeggedRules(id: string, kneeUp: number, why: { knees: string; spin
     },
     {
       id: `${id}.trunk_vertical_front`, view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 8], label: 'Rumpf seitlich',
+      range: [0, 10], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Rumpf mittig halten: nicht zur Seite kippen, Brustbein über die Beckenmitte.',
       why: 'Beide Sitzbeine tragen gleich, die Mittelachse bleibt senkrecht.', weight: 2,
     },
     {
       id: `${id}.hips_level`, view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Beide Sitzbeine gleichmäßig in den Boden drücken, Becken ausgleichen.',
       why: 'Ein schiefes Becken im Sitz verrät ungleiche Beinlage und verkürzt eine Rumpfseite.', weight: 2,
@@ -127,14 +127,14 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'bharadvajasana.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 8], label: 'Rumpf seitlich',
+      range: [0, 10], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Nicht zur Seite kippen: Wirbelsäule senkrecht, Brustbein über der Beckenmitte, dann erst drehen.',
       why: 'Die Wirbelsäule dreht sich um die senkrechte Achse; seitliches Kippen verkürzt eine Rumpfseite.', weight: 3,
     },
     {
       id: 'bharadvajasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Beide Sitzbeine am Boden halten: das Gesäß der Beinseite nicht anheben, Decke unterlegen.',
       why: 'Beide Sitzbeine bleiben schwer, damit die Drehung aus der Wirbelsäule und nicht aus dem Becken kommt.', weight: 2,
@@ -144,18 +144,11 @@ const rules: Record<string, Rule[]> = {
   // ---------------------------------------------------------------- Jathara Parivartanasana
   jathara_parivartanasana: [
     {
-      id: 'jathara_parivartanasana.legs_straight', view: 'front', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
-      range: [160, 180], margin: 10, label: 'Beine',
-      cueBelow: 'Knie strecken: Fersen weit wegschieben, Oberschenkel fest.',
-      cueAbove: 'Knie nicht überstrecken: Kniescheiben hoch, Beine aktiv.',
-      why: 'Die gestreckten Beine sind die Hebel der Drehung; gebeugte Knie nehmen ihr die Wirkung.', weight: 2,
-    },
-    {
       id: 'jathara_parivartanasana.shoulders_flat', view: 'front', measure: tilt('left_shoulder', 'right_shoulder', 'horizontal'),
-      range: [0, 10], margin: 8, label: 'Schultern am Boden',
+      range: [0, 12], margin: 8, label: 'Schultern am Boden',
       cueBelow: 'Schultern am Boden halten.',
-      cueAbove: 'Beide Schulterblätter auf den Boden drücken: Schultern gleich schwer, Arme in Linie.',
-      why: 'Die Schultern bleiben am Boden, während sich Becken und Beine drehen: so dreht sich die Wirbelsäule, nicht der ganze Körper.', weight: 3,
+      cueAbove: 'Beide Schultern am Boden lassen: Beine nur so weit sinken lassen, wie die Schulter unten bleibt.',
+      why: 'Die Schultern bleiben am Boden, während sich Becken und Beine drehen: so dreht sich die Wirbelsäule, nicht der ganze Körper.', weight: 2,
     },
     {
       id: 'jathara_parivartanasana.arms_in_line', view: 'front', measure: tilt('left_wrist', 'right_wrist', 'horizontal'),
@@ -216,7 +209,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'parivrtta_utkatasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Becken ausgleichen: beide Hüften gleich hoch, Gewicht auf beide Fersen.',
       why: 'Das Becken bleibt als stabile Basis; die Drehung kommt aus der Wirbelsäule.', weight: 2,
@@ -227,7 +220,7 @@ const rules: Record<string, Rule[]> = {
   sukhasana: crossLeggedRules('sukhasana', 0.2, {
     knees: 'Im leichten Sitz liegen die Hüften höher als die Knie, damit das Becken aufrecht bleibt.',
     spine: 'Im Sitz richtet sich die Wirbelsäule senkrecht aus dem Becken auf; das ist die Grundlage von Atem und Konzentration.',
-    kneesAbove: 'Knie höher als Hüften: Decke oder Block unter das Gesäß legen, bis die Hüften höher sind.',
+    kneesAbove: 'Die Knie sind höher als die Hüften: Decke oder Block unter das Gesäß, bis die Hüften höher sind als die Knie.',
   }),
 
   // ---------------------------------------------------------------- Padmasana
@@ -241,7 +234,7 @@ const rules: Record<string, Rule[]> = {
   siddhasana: crossLeggedRules('siddhasana', 0.15, {
     knees: 'Im Siddhasana sinken die Knie zum Boden, die Ferse drückt gegen den Damm; Hüften höher als Knie.',
     spine: 'Im Siddhasana steht die Wirbelsäule senkrecht über den Sitzbeinen.',
-    kneesAbove: 'Knie höher als Hüften: Decke oder Block unter das Gesäß legen, bis die Hüften höher sind.',
+    kneesAbove: 'Die Knie sind höher als die Hüften: Decke oder Block unter das Gesäß, bis die Hüften höher sind als die Knie.',
   }),
 
   // ---------------------------------------------------------------- Virasana
@@ -269,14 +262,14 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'virasana.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 8], label: 'Rumpf seitlich',
+      range: [0, 10], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Rumpf mittig halten: Brustbein über die Beckenmitte, nicht zur Seite kippen.',
       why: 'Beide Sitzbeine tragen gleich, die Mittelachse bleibt senkrecht.', weight: 2,
     },
     {
       id: 'virasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Beide Sitzbeine gleichmäßig in den Block oder Boden drücken, Becken ausgleichen.',
       why: 'Ein gerades Becken zeigt, dass beide Beine gleich gebeugt sind.', weight: 2,
@@ -308,7 +301,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'baddha_konasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 8], label: 'Becken',
+      range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
       cueAbove: 'Beide Sitzbeine gleichmäßig in den Boden drücken, Becken ausgleichen.',
       why: 'Das gerade Becken ist die Basis für gleiche Beinöffnung.', weight: 2,
@@ -326,7 +319,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'gomukhasana.trunk_vertical_front', view: 'front', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 8], label: 'Rumpf seitlich',
+      range: [0, 12], label: 'Rumpf seitlich',
       cueBelow: 'Rumpf aufrecht halten.',
       cueAbove: 'Rumpf mittig halten: Brustbein über die Beckenmitte, nicht zur Seite kippen.',
       why: 'Die Mittelachse bleibt senkrecht, auch wenn ein Arm oben und einer unten bindet.', weight: 2,
@@ -340,9 +333,9 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'gomukhasana.knees_stacked', view: 'front', measure: offset('left_knee', 'right_knee', 'x', undefined, true),
-      range: [0, 0.2], margin: 0.1, label: 'Knie übereinander',
+      range: [0, 0.3], margin: 0.15, label: 'Knie übereinander',
       cueBelow: 'Knie übereinander halten.',
-      cueAbove: 'Knie genau übereinander in der Mitte: oberen Oberschenkel nach innen drehen, Decke unterlegen.',
+      cueAbove: 'Knie übereinander schichten; geht das nicht, Decke unter das Gesäß.',
       why: 'Die Knie liegen übereinander in der Mittellinie; so bleiben die Sitzbeine unter dem Rumpf.', weight: 3,
     },
   ],
@@ -351,10 +344,10 @@ const rules: Record<string, Rule[]> = {
   hanumanasana: [
     {
       id: 'hanumanasana.split_angle', view: 'side', measure: angle('lead_ankle', 'mid_hip', 'trail_ankle'),
-      range: [150, 180], margin: 25, label: 'Spagat',
-      cueBelow: 'Becken Richtung Boden sinken lassen, Blöcke unter die Hände: nicht erzwingen.',
+      range: [150, 180], margin: 30, label: 'Spagat',
+      cueBelow: 'Becken nur so weit sinken lassen, wie die Beine gerade bleiben: Blöcke unter die Hände oder das Gesäß.',
       cueAbove: 'Beine in einer Linie halten.',
-      why: 'Der Spagat bildet eine gerade Linie zwischen vorderem und hinterem Bein.', weight: 2,
+      why: 'Der Spagat bildet eine gerade Linie zwischen vorderem und hinterem Bein.', weight: 1,
     },
     {
       id: 'hanumanasana.front_leg_straight', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
@@ -383,8 +376,8 @@ const rules: Record<string, Rule[]> = {
   eka_pada_rajakapotasana: [
     {
       id: 'eka_pada_rajakapotasana.back_leg_straight', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
-      range: [150, 180], margin: 10, label: 'Hinteres Bein',
-      cueBelow: 'Hinteres Knie strecken: Oberschenkel zum Boden, Ferse weit zurückschieben.',
+      range: [150, 180], margin: 20, label: 'Hinteres Bein',
+      cueBelow: 'Hinteres Bein lang nach hinten strecken, Oberschenkel Richtung Boden.',
       cueAbove: 'Hinteres Knie nicht überstrecken.',
       why: 'Das nach hinten gestreckte Bein bildet die lange Linie, in die sich Becken und Brustkorb öffnen.', weight: 2,
     },
@@ -518,7 +511,7 @@ const rules: Record<string, Rule[]> = {
     },
     {
       id: 'tolasana.hips_lifted', view: 'side', measure: offset('mid_hip', 'mid_wrist', 'y', 'up'),
-      range: [0.15, 1.5], margin: 0.08, label: 'Becken gehoben',
+      range: [0.15, 3], margin: 0.08, label: 'Becken gehoben',
       cueBelow: 'Becken vom Boden lösen: Hände in den Boden drücken, Schultern nach unten schieben.',
       cueAbove: 'Gleichgewicht über den Händen halten, Becken nur so hoch wie nötig.',
       why: 'Das Becken schwebt über dem Boden, getragen von den Armen und der Kraft der Schultern.', weight: 3,
@@ -570,7 +563,7 @@ const rules: Record<string, Rule[]> = {
       id: 'salamba_sarvangasana.trunk_vertical', view: 'side', measure: tilt('mid_shoulder', 'mid_hip', 'vertical'),
       range: [0, 18], margin: 10, label: 'Rumpf senkrecht',
       cueBelow: 'Rumpf senkrecht halten.',
-      cueAbove: 'Rumpf weiter aufrichten: Hände stützen den Rücken, Brustbein zum Kinn, Becken über die Schultern.',
+      cueAbove: 'Hände höher an den Rücken, Rumpf senkrecht über die Schultern heben.',
       why: 'Der Rumpf steht möglichst senkrecht auf den Schultern; Hände stützen, der Nacken trägt kein Gewicht.', weight: 3,
     },
     {
@@ -595,7 +588,7 @@ const rules: Record<string, Rule[]> = {
       id: 'halasana.trunk_vertical', view: 'side', measure: tilt('mid_shoulder', 'mid_hip', 'vertical'),
       range: [0, 18], margin: 10, label: 'Rumpf senkrecht',
       cueBelow: 'Rumpf senkrecht halten.',
-      cueAbove: 'Rumpf aufrichten: Hände am Rücken, Becken über die Schultern, Brustbein zum Kinn.',
+      cueAbove: 'Hüften über die Schultern bringen, Hände stützen den Rücken; Füße auf Stuhl oder Blöcke, wenn sie den Boden nicht erreichen.',
       why: 'Der Rumpf steht möglichst senkrecht, die Beine fallen aus dem Becken nach hinten.', weight: 3,
     },
     {
@@ -613,21 +606,21 @@ const rules: Record<string, Rule[]> = {
       id: 'karnapidasana.trunk_vertical', view: 'side', measure: tilt('mid_shoulder', 'mid_hip', 'vertical'),
       range: [0, 18], margin: 10, label: 'Rumpf senkrecht',
       cueBelow: 'Rumpf senkrecht halten.',
-      cueAbove: 'Rumpf aufrichten: Hände am Rücken, Becken über die Schultern.',
+      cueAbove: 'Hände höher an den Rücken, Rumpf senkrecht über die Schultern heben.',
       why: 'Auch mit gebeugten Knien bleibt der Rumpf möglichst senkrecht über den Schultern.', weight: 3,
     },
     {
       id: 'karnapidasana.knees_bent', view: 'side', measure: angle('mid_hip', 'mid_knee', 'mid_ankle'),
       range: [0, 80], margin: 20, label: 'Knie gebeugt',
       cueBelow: 'Knie vollständig beugen.',
-      cueAbove: 'Knie tiefer beugen: Schienbeine zum Boden, Knie zu den Ohren.',
+      cueAbove: 'Knie nur so tief beugen, wie der Nacken frei bleibt: Decke unter die Schultern.',
       why: 'Die Knie beugen sich tief neben die Ohren, die Schienbeine liegen am Boden.', weight: 2,
     },
     {
       id: 'karnapidasana.knees_by_ears', view: 'side', measure: offset('mid_knee', 'mid_ear', 'y', undefined, true),
       range: [0, 0.5], margin: 0.15, label: 'Knie neben Ohren',
       cueBelow: 'Knie neben den Ohren halten.',
-      cueAbove: 'Knie weiter zu den Ohren sinken lassen, Schienbeine am Boden ablegen.',
+      cueAbove: 'Knie nur so weit zu den Ohren sinken lassen, wie der Nacken frei bleibt: Decke unter die Schultern.',
       why: 'Die Knie liegen neben den Ohren am Boden; das beruhigt Atem und Sinne.', weight: 1,
     },
   ],

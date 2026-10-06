@@ -25,8 +25,15 @@ function refsOf(rule: Rule): string[] {
 describe('IYENGAR rule set structure', () => {
   it('has rules for every pose', () => {
     for (const id of CORE_POSE_IDS) expect(IYENGAR.rules[id]?.length ?? 0, id).toBeGreaterThanOrEqual(3);
-    for (const p of POSES) expect(IYENGAR.rules[p.id]?.length ?? 0, p.id).toBeGreaterThanOrEqual(2);
+    for (const p of POSES) expect(IYENGAR.rules[p.id]?.length ?? 0, p.id).toBeGreaterThanOrEqual(1);
     for (const id of IYENGAR.draftPoseIds ?? []) expect(CORE_POSE_IDS, id).not.toContain(id);
+  });
+
+  it('marks poses with a single rule as a rough estimate', () => {
+    // Round 2 (P37): no filler rules just to reach a minimum; a pose with only one measurable rule says so.
+    for (const p of POSES) {
+      if ((IYENGAR.rules[p.id]?.length ?? 0) === 1) expect(p.limits ?? '', p.id).toContain('Grobe Einschätzung');
+    }
   });
 
   it('has no rules for unknown poses', () => {
@@ -150,5 +157,34 @@ describe('IYENGAR sanity with synthetic ideal frames', () => {
     const ctx: FrameContext = { width: 1000, height: 1000, matFront: 'right', side: 'right' };
     const res = evaluatePose(f, IYENGAR.rules.virabhadrasana_2, 'side', ctx);
     expect(res.find((r) => r.rule.id === 'virabhadrasana_2.front_knee_angle')?.status).toBe('major');
+  });
+});
+
+describe('IYENGAR round 2 decisions', () => {
+  it('keeps hips_level, knees_level and trunk_vertical_front out of the noise (upper bound >= 10)', () => {
+    for (const { rule } of allRules) {
+      if (!/\.(hips_level|knees_level|trunk_vertical_front)$/.test(rule.id)) continue;
+      expect(rule.range[1], rule.id).toBeGreaterThanOrEqual(10);
+    }
+  });
+
+  it('Viparita Virabhadrasana: leaning back over the trail leg passes, falling forward is flagged with the back-lean cue', () => {
+    const rules = IYENGAR.rules.viparita_virabhadrasana.filter((r) => r.id.endsWith('trunk_lean_back'));
+    expect(rules).toHaveLength(1);
+    const ctx: FrameContext = { width: 1000, height: 1000, matFront: 'right', side: 'right' };
+    // right = lead (front, bent) knee; the trail (left) ankle lies on the image left of the hips.
+    const base: Record<string, [number, number]> = { left_hip: [500, 550], right_hip: [500, 550], left_ankle: [100, 900], right_ankle: [800, 900] };
+    const back = frame({ ...base, left_shoulder: [400, 300], right_shoulder: [400, 300] });
+    const fwd = frame({ ...base, left_shoulder: [600, 300], right_shoulder: [600, 300] });
+    expect(evaluatePose(back, rules, 'side', ctx)[0].status).toBe('ok');
+    const bad = evaluatePose(fwd, rules, 'side', ctx)[0];
+    expect(bad.status).not.toBe('ok');
+    expect(bad.cue).toContain('zurückneigen');
+  });
+
+  it('Phalakasana measures both arms with one mid_elbow rule', () => {
+    const r = IYENGAR.rules.phalakasana.find((x) => x.id === 'phalakasana.arms_straight');
+    expect(r?.measure).toMatchObject({ kind: 'angle', b: 'mid_elbow' });
+    expect(isKnownRef('mid_elbow')).toBe(true);
   });
 });
