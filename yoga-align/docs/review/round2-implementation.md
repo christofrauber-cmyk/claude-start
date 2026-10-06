@@ -40,7 +40,7 @@ P1, P2, P3, P4, P5 (hips_level only), P6, P8, P10, P11, P12, P13, P14, P15, P17,
 1. Flexibility depth: stays as it is (low weight, "only as far as" cues). No engine flag.
 2. Prasarita: `left_leg_straight` / `right_leg_straight` deleted (the knee bends toward the side camera, so they could never fire). Left: `hips_level`, `leg_spread`, `hip_over_feet_side`.
 3. Skandasana: name and pose unchanged (modern side lunge).
-4. Eka Pada Koundinyasana: usually one leg points to the short mat edge and one to the long edge; very flexible people point both to opposite short edges. Rules stay on side, but both leg rules are now w1, margin 25, and `limits` says the leg pointing to the long edge is foreshortened. Open follow-up: which leg (front or back) goes to the long edge? If known, that leg's rule can move to front.
+4. Eka Pada Koundinyasana: usually one leg points to the short mat edge and one to the long edge; very flexible people point both to opposite short edges. Christof: the FRONT leg points to the long edge. So `lead_leg_straight` is on front (w2, margin 12) and `trail_leg_straight` stays on side (w2, margin 10). For very flexible people (both legs to the short edges) the front leg is foreshortened in that view; `limits` says so.
 5. Parivrtta Trikonasana convention confirmed: "rechts" = right leg in front, left hand outside the right foot.
 6. Uttana Shishosana arms w1, Dhanurasana arms w2 (B's weights).
 7. Viparita Virabhadrasana, Kapotasana fallback, Parsva Bakasana arms: as they are.
