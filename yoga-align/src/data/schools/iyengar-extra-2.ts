@@ -204,7 +204,7 @@ const rules: Record<string, Rule[]> = {
       why: 'Die Hüfte bleibt über den Knien, so wird der Rücken lang und die Brust sinkt zum Boden.', weight: 3,
     },
     ...armsStraight(
-      'uttana_shishosana', [160, 180], 2,
+      'uttana_shishosana', [160, 180], 1,
       'Arm ganz strecken, Hände weit nach vorn.',
       'Ellbogen nicht überstrecken, Oberarme aktiv.',
       'Die langen Arme ziehen die Schultern vom Becken weg und strecken die Wirbelsäule.',
@@ -484,7 +484,7 @@ const rules: Record<string, Rule[]> = {
   // ------------------------------------------------------------------ Dhanurasana
   dhanurasana: [
     ...armsStraight(
-      'dhanurasana', [160, 180], 3,
+      'dhanurasana', [160, 180], 2,
       'Arme ganz strecken, Füße in die Hände drücken.',
       'Ellbogen nicht überstrecken.',
       'Die gestreckten Arme sind die Bogensehne; die Füße ziehen sie, die Brust öffnet sich.',

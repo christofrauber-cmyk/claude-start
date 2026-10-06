@@ -285,17 +285,17 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
   eka_pada_koundinyasana: [
     {
       id: 'eka_pada_koundinyasana.lead_leg_straight', view: 'side', measure: angle('lead_hip', 'lead_knee', 'lead_ankle'),
-      range: [150, 180], margin: 10, label: 'Vorderes Bein',
+      range: [150, 180], margin: 25, label: 'Vorderes Bein',
       cueBelow: 'Vorderes Bein strecken: Ferse weg, Oberschenkel fest.',
       cueAbove: 'Knie nicht überstrecken: Kniescheibe hoch.',
-      why: 'Das gestreckte Vorderbein bildet den langen Hebel der Haltung.', weight: 2,
+      why: 'Das gestreckte Vorderbein bildet den langen Hebel der Haltung.', weight: 1,
     },
     {
       id: 'eka_pada_koundinyasana.trail_leg_straight', view: 'side', measure: angle('trail_hip', 'trail_knee', 'trail_ankle'),
-      range: [150, 180], margin: 10, label: 'Hinteres Bein',
+      range: [150, 180], margin: 25, label: 'Hinteres Bein',
       cueBelow: 'Hinteres Bein strecken: Ferse zurück, Oberschenkel fest.',
       cueAbove: 'Knie nicht überstrecken: Kniescheibe hoch.',
-      why: 'Das hintere Bein gleicht das vordere aus; beide strecken sich in gegengesetzte Richtungen.', weight: 2,
+      why: 'Das hintere Bein gleicht das vordere aus; beide strecken sich in gegengesetzte Richtungen.', weight: 1,
     },
   ],
 

@@ -81,3 +81,6 @@ Option A runs live: Worker secret and `VITE_CLASSIFY_URL` are set, Christof conf
 
 ## Status 2026-10-06 (session 6): round-2 Iyengar rules implemented
 See `docs/review/round2-implementation.md` (answers to the code questions, deviations, the 9 open expert questions). 278 rules in 79 extra poses, 157 tests green, build clean. Core change: `mid_elbow` midpoint. Not yet seen on a real video: the new rules were only tested with synthetic frames, so run the two test videos once and look at the review screen.
+
+## Status 2026-10-06 (later)
+All expert questions from round 2 are decided (see `docs/review/round2-implementation.md`). Only one small follow-up remains: in Eka Pada Koundinyasana, which leg points to the long mat edge. Next real step: run the two test videos through the live app and compare the review screen with the new rules.

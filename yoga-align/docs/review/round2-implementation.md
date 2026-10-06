@@ -36,9 +36,11 @@ P1, P2, P3, P4, P5 (hips_level only), P6, P8, P10, P11, P12, P13, P14, P15, P17,
 3. Malasana in Light on Yoga: feet together, deep squat, trunk forward between the thighs, hands bound behind the back or around the ankles, forehead to the floor in the full form. So the upright squat is the modern form. Implemented: `trunk_upright` and `hips_level` deleted (the first would punish the Iyengar form, the second is hidden by the trunk); only `knee_angle` remains, `limits` says so.
 4. Parsva Bakasana: no primary source found. Secondary sources only agree that one thigh rests on the opposite upper arm after a full twist; for the arms they conflict (straight as possible vs. bent elbows). The current rules (`shoulders_over_wrists`, `lead_leg_folded`) work with both, so nothing changed. Check Light on Yoga, Parsva Bakasana, if you want an arm rule back.
 
-## Still open
-6. Viparita Virabhadrasana: do people often fall forward? (the signed measure is in)
-7. Flexibility depth (split, leg height, knees to ears, thighs to floor): score at all or w1?
-8. Skandasana: modern side lunge or the Light on Yoga pose?
-9. Kapotasana: knees together or hip width? (unused fallback)
-10. Prasarita: legs on side (confirmed 2:1) or front (R2)? And Eka Pada Koundinyasana: which variant (leg direction relative to the mat)?
+## Decided by Christof (2026-10-06, second batch)
+1. Flexibility depth: stays as it is (low weight, "only as far as" cues). No engine flag.
+2. Prasarita: `left_leg_straight` / `right_leg_straight` deleted (the knee bends toward the side camera, so they could never fire). Left: `hips_level`, `leg_spread`, `hip_over_feet_side`.
+3. Skandasana: name and pose unchanged (modern side lunge).
+4. Eka Pada Koundinyasana: usually one leg points to the short mat edge and one to the long edge; very flexible people point both to opposite short edges. Rules stay on side, but both leg rules are now w1, margin 25, and `limits` says the leg pointing to the long edge is foreshortened. Open follow-up: which leg (front or back) goes to the long edge? If known, that leg's rule can move to front.
+5. Parivrtta Trikonasana convention confirmed: "rechts" = right leg in front, left hand outside the right foot.
+6. Uttana Shishosana arms w1, Dhanurasana arms w2 (B's weights).
+7. Viparita Virabhadrasana, Kapotasana fallback, Parsva Bakasana arms: as they are.

@@ -134,20 +134,6 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
   // ------------------------------------------------------- Prasarita Padottanasana (nicht seitig)
   prasarita_padottanasana: [
     {
-      id: 'prasarita_padottanasana.left_leg_straight', view: 'side', measure: angle('left_hip', 'left_knee', 'left_ankle'),
-      range: [165, 180], label: 'Linkes Bein',
-      cueBelow: 'Linkes Knie strecken: Kniescheibe hochziehen, Oberschenkel zurück.',
-      cueAbove: 'Linkes Knie nicht überstrecken: Kniescheibe hoch.',
-      why: 'Feste, gestreckte Beine tragen die Vorbeuge und lassen den Rumpf frei hängen.', weight: 3,
-    },
-    {
-      id: 'prasarita_padottanasana.right_leg_straight', view: 'side', measure: angle('right_hip', 'right_knee', 'right_ankle'),
-      range: [165, 180], label: 'Rechtes Bein',
-      cueBelow: 'Rechtes Knie strecken: Kniescheibe hochziehen, Oberschenkel zurück.',
-      cueAbove: 'Rechtes Knie nicht überstrecken: Kniescheibe hoch.',
-      why: 'Feste, gestreckte Beine tragen die Vorbeuge und lassen den Rumpf frei hängen.', weight: 3,
-    },
-    {
       id: 'prasarita_padottanasana.hips_level', view: 'side', measure: tilt('left_hip', 'right_hip', 'horizontal'),
       range: [0, 10], label: 'Becken',
       cueBelow: 'Becken waagrecht halten.',
