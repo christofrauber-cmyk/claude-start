@@ -508,13 +508,6 @@ const rules: Record<string, Rule[]> = {
   // ------------------------------------------------------------------- Makarasana
   makarasana: [
     {
-      id: 'makarasana.trunk_flat', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'horizontal'),
-      range: [0, 20], margin: 8, label: 'Rumpf flach',
-      cueBelow: 'Rumpf flach halten.',
-      cueAbove: 'Brust zum Boden sinken lassen, Schultern entspannen.',
-      why: 'Der Rumpf ruht flach am Boden; so entspannt sich der ganze Rücken.', weight: 1,
-    },
-    {
       id: 'makarasana.legs_on_floor', view: 'side', measure: tilt('mid_hip', 'mid_ankle', 'horizontal'),
       range: [0, 25], margin: 8, label: 'Beine am Boden',
       cueBelow: 'Beine am Boden lassen.',

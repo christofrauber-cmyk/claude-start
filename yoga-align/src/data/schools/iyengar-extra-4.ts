@@ -309,7 +309,7 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
       why: 'Der gestreckte Stützarm trägt den Körper, ohne dass die Schulter einsinkt.', weight: 3,
     },
     {
-      id: 'vasisthasana.support_arm_vertical', view: 'front', measure: tilt('lead_wrist', 'lead_shoulder', 'vertical'),
+      id: 'vasisthasana.support_arm_vertical', view: 'side', measure: tilt('lead_wrist', 'lead_shoulder', 'vertical'),
       range: [0, 12], label: 'Stützarm senkrecht',
       cueBelow: 'Arm senkrecht halten.',
       cueAbove: 'Schulter über das Handgelenk bringen: Stützarm senkrecht zum Boden.',
@@ -323,7 +323,7 @@ export const RULES_EXTRA_4: Record<string, Rule[]> = {
       why: 'Eine gerade Körperlinie verlangt aktive Beine und einen starken Rumpf.', weight: 3,
     },
     {
-      id: 'vasisthasana.top_arm_vertical', view: 'front', measure: tilt('trail_wrist', 'trail_shoulder', 'vertical'),
+      id: 'vasisthasana.top_arm_vertical', view: 'side', measure: tilt('trail_wrist', 'trail_shoulder', 'vertical'),
       range: [0, 15], margin: 10, label: 'Oberer Arm',
       cueBelow: 'Oberen Arm senkrecht halten.',
       cueAbove: 'Oberen Arm senkrecht nach oben strecken, Brust aufdrehen.',

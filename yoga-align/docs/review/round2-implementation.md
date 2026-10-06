@@ -27,13 +27,18 @@ P1, P2, P3, P4, P5 (hips_level only), P6, P8, P10, P11, P12, P13, P14, P15, P17,
 - **P26 R2 dissent:** `support_arm_vertical` / `top_arm_vertical` stay on front (2:1 majority). Question 5 decides.
 - **P23 Ardha Navasana:** already as decided.
 
-## Still open (needs Christof)
-1. Eka Pada Rajakapotasana: preliminary pose (done, `limits` says so) or final form? (P19)
-2. Makarasana: Light-on-Yoga variant or prone rest? (P13, `trunk_flat` is wrong for the first)
-3. Malasana: Iyengar form (trunk between the knees) or upright squat? If the first, delete `hips_level`. (P5)
-4. Parsva Bakasana: straight or bent arms, how to stand to the mat? (P32)
-5. Vasisthasana: which deviation do you see more often, hand too far toward the head (along the mat) or shoulder in front of/behind the wrist (across)? (P26)
-6. Viparita Virabhadrasana: do people often fall forward? (P21, the signed measure is in)
-7. Flexibility depth (split, leg height, knees to ears, thighs to floor): score at all or show with w1? (P4, P18, P29, P36)
-8. Skandasana: modern side lunge or the Light on Yoga pose? (P28)
-9. Kapotasana: knees together or hip width? (only for the unused fallback)
+## Answered by Christof (2026-10-06) and implemented
+1. Eka Pada Rajakapotasana: preliminary pose (back leg long). Already so, `limits` says it.
+2. Makarasana: Light on Yoga variant (chest lifted, hands at the head). `trunk_flat` deleted; only `legs_on_floor` remains (w1, "Grobe Einschätzung").
+5. Vasisthasana: the typical error is the hand too far toward the head, i.e. along the mat. `support_arm_vertical` and `top_arm_vertical` moved from front to side (R2's position); all four rules are now side.
+
+## Researched (Iyengar's answer, secondary sources only, the original text could not be opened here)
+3. Malasana in Light on Yoga: feet together, deep squat, trunk forward between the thighs, hands bound behind the back or around the ankles, forehead to the floor in the full form. So the upright squat is the modern form. Implemented: `trunk_upright` and `hips_level` deleted (the first would punish the Iyengar form, the second is hidden by the trunk); only `knee_angle` remains, `limits` says so.
+4. Parsva Bakasana: no primary source found. Secondary sources only agree that one thigh rests on the opposite upper arm after a full twist; for the arms they conflict (straight as possible vs. bent elbows). The current rules (`shoulders_over_wrists`, `lead_leg_folded`) work with both, so nothing changed. Check Light on Yoga, Parsva Bakasana, if you want an arm rule back.
+
+## Still open
+6. Viparita Virabhadrasana: do people often fall forward? (the signed measure is in)
+7. Flexibility depth (split, leg height, knees to ears, thighs to floor): score at all or w1?
+8. Skandasana: modern side lunge or the Light on Yoga pose?
+9. Kapotasana: knees together or hip width? (unused fallback)
+10. Prasarita: legs on side (confirmed 2:1) or front (R2)? And Eka Pada Koundinyasana: which variant (leg direction relative to the mat)?

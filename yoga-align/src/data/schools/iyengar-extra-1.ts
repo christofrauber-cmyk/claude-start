@@ -399,20 +399,6 @@ export const RULES_EXTRA_1: Record<string, Rule[]> = {
       cueAbove: 'Tiefer in die Hocke sinken; heben die Fersen ab, Decke unter die Fersen.',
       why: 'Die tiefe Hocke öffnet Hüften und Beckenboden; die Fersen bleiben am Boden.', weight: 3,
     },
-    {
-      id: 'malasana.trunk_upright', view: 'side', measure: tilt('mid_hip', 'mid_shoulder', 'vertical'),
-      range: [0, 45], margin: 12, label: 'Rumpf',
-      cueBelow: 'Rumpf aufrecht halten.',
-      cueAbove: 'Rumpf aufrichten: Brustbein heben, nicht nach vorn rollen.',
-      why: 'Der Rumpf bleibt lang und aufrecht, das Gewicht liegt zwischen den Beinen.', weight: 2,
-    },
-    {
-      id: 'malasana.hips_level', view: 'front', measure: tilt('left_hip', 'right_hip', 'horizontal'),
-      range: [0, 10], margin: 8, label: 'Becken',
-      cueBelow: 'Gewicht gleichmäßig auf beide Füße, Becken nicht zur Seite kippen.',
-      cueAbove: 'Gewicht gleichmäßig auf beide Füße, Becken nicht zur Seite kippen.',
-      why: 'Ein waagrechtes Becken zeigt gleichmäßiges Gewicht auf beiden Beinen.', weight: 1,
-    },
   ],
 
   // ------------------------------------------------------- Utkata Konasana (nicht seitig)
